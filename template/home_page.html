@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button>benso</button>
+    <section>
+        <div>
+            {{ range .data }}
+            <a url="/profil/?id={{ .ID}}">
+            <div>
+                <img src="{{.Image}}" atl="{{ .Name}}"><br>
+                {{ .Name }}<br>
+            {{ .CreationDate}}<br>
+            {{ .FirstAlbum}}<br>
+            </div>
+        </a>
+            {{ end }}
+        </div>
+    </section>
+</body>
+
+</html>

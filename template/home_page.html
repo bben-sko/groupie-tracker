@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 
 <body>
-    <button>benso</button>
-    <section>
-        <div>
+    <section class="cart-art">
+        <div >
             {{ range .data }}
-            <a url="/profil/?id={{ .ID}}">
+            <a href="/profil?id={{ .ID }}">
             <div>
                 <img src="{{.Image}}" atl="{{ .Name}}"><br>
                 {{ .Name }}<br>
+                {{ range $v := .Members}}
+                    {{ $v }}<br>
+                {{ end }}
             {{ .CreationDate}}<br>
             {{ .FirstAlbum}}<br>
             </div>

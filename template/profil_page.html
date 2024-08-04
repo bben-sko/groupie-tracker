@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Profil (name artiste)</title>
+</head>
+
+<body>
+    <section class="cart-art">
+    <div>
+        <ul>
+            {{ range .datalocal.Locations }}
+            <li>Location: {{ . }}</li>
+            {{ end }}
+        </ul>
+    </div>
+        <br>
+    <div>
+        <ul>
+            {{ range .datadate.Dates }}
+            <li>Date: {{ . }}</li>
+            {{ end }}
+        </ul>
+    </div>
+        <br>
+        <h2>Dates and Locations:</h2>
+    <div>
+        <ul>
+            {{ range $key, $dates := .datarelation.DatesLocations }}
+            <li>Location: {{ $key }}
+                <ul>
+                    {{ range $dates }}
+                    <li>Date: {{ . }}</li>
+                    {{ end }}
+                </ul>
+            </li>
+            {{ end }}
+        </ul>
+    </div>
+    </section>
+    <button type="button" onclick="window.location.href='/'">Back</button>
+
+</body>
+
+</html>

@@ -21,6 +21,10 @@ type artists struct {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.Error(w, "page not found 404",http.StatusNotFound )
+		return
+	}
 	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
 	if err != nil {
 		http.Error(w, "Status Internal Server Error", http.StatusInternalServerError)
@@ -30,19 +34,20 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	var art []artists
 	err = json.NewDecoder(resp.Body).Decode(&art)
 	if err != nil {
-		log.Print(err)
 		http.Error(w, "Status Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 	// fmt.Println(art)
 	tmp, err := template.ParseFiles("template/home_page.html")
 	if err != nil {
-		http.Error(w, "parse", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error 500", http.StatusInternalServerError)
+		return
 	}
 	err = tmp.Execute(w, map[string]interface{}{
 		"data": art,
 })
 	if err != nil {
-		fmt.Println("dfdf")
+		http.Error(w, "Internal Server Error 500", http.StatusInternalServerError)
+		return
 	}
 }

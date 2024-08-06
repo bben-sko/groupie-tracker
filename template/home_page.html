@@ -3,26 +3,26 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 
 <body>
+    <h1 class="h1">
+        <a href="/">Groupie Tracker</a>
+    </h1>
     <section class="cart-art">
-        <div >
+        <div class="data">
             {{ range .data }}
             <a href="/profil?id={{ .ID }}">
-            <div>
-                <img src="{{.Image}}" atl="{{ .Name}}"><br>
-                {{ .Name }}<br>
-                {{ range $v := .Members}}
-                    {{ $v }}<br>
-                {{ end }}
-            {{ .CreationDate}}<br>
-            {{ .FirstAlbum}}<br>
-            </div>
-        </a>
+                <div>
+                    <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
+                    <span class="name">{{ .Name }}</span><br>
+                    <span class="CreationDate">{{ .CreationDate}}</span><br>
+                    <span class="FirstAlbum">{{ .FirstAlbum}}</span>
+                </div>
+            </a>
             {{ end }}
         </div>
     </section>

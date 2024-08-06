@@ -1,18 +1,84 @@
-body {
-    font-family: Arial, sans-serif;
+/* Normalize CSS */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center; /* Center text and inline elements */
+}
+
+h1 {
+    margin: 20px 0; /* Add vertical spacing */
+    padding: 20px; /* Add padding inside the box */
+    border: 2px solid #007BFF; /* Add a border around the box */
+    background-color: #e0f7fa; /* Light blue background color */
+    display: inline-block; /* Shrink-wrap the box around the content */
+    border-radius: 8px; /* Rounded corners for the box */
+}
+
+h1 a {
+    text-decoration: none; /* Remove underline */
+    color: #333; /* Dark color for the text */
+    font-size: 50px; /* Larger font size */
+    font-weight: bold; /* Bold text */
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth color and scale transition */
+}
+
+h1 a:hover {
+    color: #007BFF; /* Change color on hover */
+    transform: scale(1.1); /* Slightly enlarge the text on hover */
 }
 
 .cart-art {
-    max-width: 1200px;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center; /* Center the grid container horizontally */
     padding: 20px;
 }
 
-.cart-art > div {
+.data {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+    gap: 20px; /* Space between items */
+    max-width: 100%; /* Ensures the grid container does not exceed its parent width */
+    width: 100%; /* Ensures the grid container takes up the full width */
+    padding: 0; /* Optional: Remove padding if not needed */
+}
+
+.data a {
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+.data a:hover {
+    transform: scale(1.05);
+}
+
+.data div {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.data img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.data .name,
+.data .CreationDate,
+.data .FirstAlbum {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
 }

@@ -2,9 +2,7 @@ package gt
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 )
 
@@ -22,7 +20,7 @@ type artists struct {
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.Error(w, "page not found 404",http.StatusNotFound )
+		http.Error(w, "page not found 404", http.StatusNotFound)
 		return
 	}
 	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
@@ -45,7 +43,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	err = tmp.Execute(w, map[string]interface{}{
 		"data": art,
-})
+	})
 	if err != nil {
 		http.Error(w, "Internal Server Error 500", http.StatusInternalServerError)
 		return

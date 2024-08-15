@@ -5,43 +5,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Profil (name artiste)</title>    
+    <title>Profil {{ .data_artist.Name}}</title>
 </head>
 
 <body>
+    <button type="button" onclick="window.location.href='/'">Back</button><br>
+    <img src="{{ .data_artist.Image}}" alt="{{ .data_artist.Name}}" class="Image"><br>
+    <span class="name">{{ .data_artist.Name }}</span><br>
+    <span class="CreationDate">{{ .data_artist.CreationDate}}</span><br>
+    <span class="FirstAlbum">{{ .data_artist.FirstAlbum}}</span>
     <section class="cart-art">
-    <div>
-        <ul>
-            {{ range .datalocal.Locations }}
-            <li>Location: {{ . }}</li>
-            {{ end }}
-        </ul>
-    </div>
-        <br>
-    <div>
-        <ul>
-            {{ range .datadate.Dates }}
-            <li>Date: {{ . }}</li>
-            {{ end }}
-        </ul>
-    </div>
-        <br>
-        <h2>Dates and Locations:</h2>
-    <div>
-        <ul>
-            {{ range $key, $dates := .datarelation.DatesLocations }}
-            <li>Location: {{ $key }}
+        <div>
+            <li> Members :
                 <ul>
-                    {{ range $dates }}
-                    <li>Date: {{ . }}</li>
+
+                    {{ range .data_artist.Members }}
+                    <li> {{ . }}</li>
                     {{ end }}
                 </ul>
             </li>
-            {{ end }}
-        </ul>
-    </div>
+        </div>
+        <div>
+            <li> Location:
+                <ul>
+                    {{ range .datalocal.Locations }}
+                    <li> {{ . }}</li>
+                    {{ end }}
+                </ul>
+            </li>
+        </div>
+        <br>
+        <div>
+            <li>Date :
+                <ul>
+
+                    {{ range .datadate.Dates }}
+                    <li> {{ . }}</li>
+                    {{ end }}
+                </ul>
+            </li>
+        </div>
+        <br>
+        <h2>Dates and Locations:</h2>
+        <div>
+            <ul>
+                {{ range $key, $dates := .datarelation.DatesLocations }}
+                <li>Location: {{ $key }}
+                    <ul>
+                        {{ range $dates }}
+                        <li>Date: {{ . }}</li>
+                        {{ end }}
+                    </ul>
+                </li>
+                {{ end }}
+            </ul>
+        </div>
     </section>
-    <button type="button" onclick="window.location.href='/'">Back</button>
+   
 
 </body>
 

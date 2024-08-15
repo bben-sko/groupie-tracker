@@ -8,10 +8,10 @@ import (
 )
 
 func main() {
+	fmt.Println("http://localhost:8081/")
 	http.Handle("/styles.css", http.FileServer(http.Dir("template")))
 	http.HandleFunc("/", g.Home)
 	http.HandleFunc("/search", g.SearchHandler)
-	fmt.Println("http://localhost:8081/")
 
 	http.HandleFunc("/profil", g.Profil)
 	err := http.ListenAndServe(":8081", nil)
@@ -19,5 +19,4 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
 }

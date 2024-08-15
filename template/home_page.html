@@ -12,13 +12,13 @@
 </h1>
 
 <div class="search-container">
-    <input type="text" id="search" placeholder="Search..." oninput="showSuggestions(this.value)">
+    <input type="text" id="search" placeholder="Search..."  oninput="showSuggestions(this.value)">
     <div id="suggestions"></div>
 </div>
 
 <section class="cart-art">
     <div class="data">
-        {{ range .data }}
+        {{ range .}}
         <a href="/profil?id={{ .ID }}">
             <div>
                 <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
@@ -40,9 +40,11 @@ function showSuggestions(query) {
     fetch(`/search?s=${query}`)
         .then(response => response.json())
         .then(data => {
-            let suggestions = data.map(item => `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`).join('');
+            let suggestions = data.map(item => 
+                `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`
+            ).join('');
             document.getElementById("suggestions").innerHTML = suggestions;
-     });
+        });
 }
 
 </script>

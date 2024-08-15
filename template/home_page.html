@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <p style="background-image: url(bg1.jpg);" ></p>
 </head>
 
 <h1 class="h1">
@@ -40,11 +41,9 @@ function showSuggestions(query) {
     fetch(`/search?s=${query}`)
         .then(response => response.json())
         .then(data => {
-            let suggestions = data.map(item => 
-                `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`
-            ).join('');
+            let suggestions = data.map(item => `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`).join('');
             document.getElementById("suggestions").innerHTML = suggestions;
-        });
+     });
 }
 
 </script>

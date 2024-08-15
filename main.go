@@ -11,6 +11,7 @@ func main() {
 	http.Handle("/styles.css", http.FileServer(http.Dir("template")))
 	http.HandleFunc("/", g.Home)
 	http.HandleFunc("/search", g.SearchHandler)
+	fmt.Println("http://localhost:8081/")
 
 	http.HandleFunc("/profil", g.Profil)
 	err := http.ListenAndServe(":8081", nil)
@@ -19,5 +20,4 @@ func main() {
 		return
 	}
 
-	fmt.Println("http://localhost:8081/")
 }

@@ -3,29 +3,48 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
-    <h1 class="h1">
-        <a href="/">Groupie Tracker</a>
-    </h1>
-    <section class="cart-art">
-        <div class="data">
-            {{ range .data }}
-            <a href="/profil?id={{ .ID }}">
-                <div>
-                    <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
-                    <span class="name">{{ .Name }}</span><br>
-                    <span class="CreationDate">{{ .CreationDate}}</span><br>
-                    <span class="FirstAlbum">{{ .FirstAlbum}}</span>
-                </div>
-            </a>
-            {{ end }}
-        </div>
-    </section>
-</body>
+<h1 class="h1">
+    <a href="/">Groupie Tracker</a>
+</h1>
 
-</html>
+<div class="search-container">
+    <input type="text" id="search" placeholder="Search..." oninput="showSuggestions(this.value)">
+    <div id="suggestions"></div>
+</div>
+
+<section class="cart-art">
+    <div class="data">
+        {{ range .data }}
+        <a href="/profil?id={{ .ID }}">
+            <div>
+                <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
+                <span class="name">{{ .Name }}</span><br>
+                <span class="CreationDate">{{ .CreationDate}}</span><br>
+                <span class="FirstAlbum">{{ .FirstAlbum}}</span>
+            </div>
+        </a>
+        {{ end }}
+    </div>
+</section>
+
+<script>
+function showSuggestions(query) {
+    if (query.length == 0) {
+        document.getElementById("suggestions").innerHTML = "";
+        return;
+    }
+    fetch(`/search?s=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            let suggestions = data.map(item => 
+                `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`
+            ).join('');
+            document.getElementById("suggestions").innerHTML = suggestions;
+        });
+}
+
+</script>

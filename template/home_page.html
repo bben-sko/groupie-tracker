@@ -40,6 +40,7 @@ function showSuggestions(query) {
     fetch(`/search?s=${query}`)
         .then(response => response.json())
         .then(data => {
+            console.log("==", data)
             let suggestions = data.map(item => 
                 `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`
             ).join('');

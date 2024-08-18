@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 
 	d "gt/data"
@@ -17,7 +18,9 @@ var artists = []d.Artist{
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	query := strings.ToLower(r.URL.Query().Get("s"))
 	var results []d.SearchResult
+
 	for _, artist := range artists {
+
 		if strings.Contains(strings.ToLower(artist.Name), query) {
 			results = append(results, d.SearchResult{
 				ID:   artist.ID,
@@ -34,8 +37,25 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				})
 			}
 		}
+		
+			if strings.Contains(strings.ToLower(artist.FirstAlbum), query) {
+				results = append(results, d.SearchResult{
+					ID:   artist.ID,
+					Name: artist.FirstAlbum,
+					Type: "FirstAlbum",
+				})
+			}
+			C_Date := strconv.Itoa(artist.CreationDate) 
+			
+		if strings.Contains(strings.ToLower(C_Date), query) {
+				results = append(results, d.SearchResult{
+					ID:   artist.ID,
+					Name: C_Date,
+					Type: "Creation Date",
+				})
+			}
+		
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(results)
 }
@@ -51,7 +71,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	var artists []d.Artist
+
 	err = json.NewDecoder(resp.Body).Decode(&artists)
 	if err != nil {
 		fmt.Println(err)

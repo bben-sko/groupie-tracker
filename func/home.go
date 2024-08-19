@@ -12,7 +12,6 @@ import (
 )
 
 var artists = []d.Artist{
-	// Your list of artists
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +32,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				results = append(results, d.SearchResult{
 					ID:   artist.ID,
 					Name: member,
-					Type: "member",
+					Type: "member of "+artist.Name,
 				})
 			}
 		}
@@ -42,7 +41,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				results = append(results, d.SearchResult{
 					ID:   artist.ID,
 					Name: artist.FirstAlbum,
-					Type: "FirstAlbum",
+					Type: "FirstAlbum of "+artist.Name,
 				})
 			}
 			C_Date := strconv.Itoa(artist.CreationDate) 
@@ -51,7 +50,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				results = append(results, d.SearchResult{
 					ID:   artist.ID,
 					Name: C_Date,
-					Type: "Creation Date",
+					Type: "Creation Date of "+artist.Name,
 				})
 			}
 		

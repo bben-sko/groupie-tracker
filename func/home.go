@@ -11,9 +11,10 @@ import (
 	d "gt/data"
 )
 
-var artists []d.Artist
-
-// artis   d.Locations
+var (
+	artists []d.Artist
+	artis   d.Locations
+)
 
 func handleError(w http.ResponseWriter, status int, msg string, err error) {
 	http.Error(w, msg, status)
@@ -25,9 +26,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	var results []d.SearchResult
 
 	for i, artist := range artists {
-		/*if len(results) > 10 {
+		if len(results) > 16 {
 			break
-		}*/
+		}
+
 		if i == 0 {
 			for _, ar := range artists {
 				artistName2 := strings.ToLower(ar.Name)
@@ -50,6 +52,9 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	for i, artist := range artists {
+		if len(results) > 16 {
+			break
+		}
 		if i == 0 {
 			for _, ar := range artists {
 				for _, member := range ar.Members {
@@ -74,41 +79,20 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	for i, artist := range artists {
-		if i == 0 {
-			for _, ar := range artists {
-				artistName2 := strings.ToLower(ar.FirstAlbum)
-				if strings.HasPrefix(artistName2, query) {
-					results = append(results, d.SearchResult{
-						ID:   ar.ID,
-						Name: ar.FirstAlbum,
-						Type: "FirstAlbum of " + ar.Name,
-					})
-				}
-			}
+	for _, artist := range artists {
+		if len(results) > 16 {
+			break
 		}
-		if !strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) && strings.Contains(strings.ToLower(artist.FirstAlbum), query) {
+		if strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) {
 			results = append(results, d.SearchResult{
 				ID:   artist.ID,
 				Name: artist.FirstAlbum,
 				Type: "FirstAlbum of " + artist.Name,
 			})
 		}
-	
-		if i == 0 {
-			for _, ar := range artists {
-				C_Date := strconv.Itoa(ar.CreationDate)
-				if strings.HasPrefix(strings.ToLower(C_Date), query) {
-					results = append(results, d.SearchResult{
-						ID:   ar.ID,
-						Name: C_Date,
-						Type: "Creation Date of " + ar.Name,
-					})
-				}
-			}
-		}
+
 		C_Date := strconv.Itoa(artist.CreationDate)
-		if !strings.HasPrefix(strings.ToLower(C_Date), query) && strings.Contains(strings.ToLower(C_Date), query) {
+		if strings.HasPrefix(strings.ToLower(C_Date), query) {
 			results = append(results, d.SearchResult{
 				ID:   artist.ID,
 				Name: C_Date,
@@ -116,8 +100,13 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 	}
-		/*if err := fetchAndDecode(artist.Locations, &artis); err != nil {
-			handleError(w, http.StatusInternalServerError, "Internal Server Error 500",err)
+	for _, artist := range artists {
+		if len(results) > 16 {
+			break
+		}
+
+		if err := fetchAndDecode(artist.Locations, &artis); err != nil {
+			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 			return
 		}
 
@@ -129,12 +118,11 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 					Type: "location of " + artist.Name,
 				})
 			}
-		}*/
-	
-
-	/*if len(results) > 10 {
-		results = results[:10]
-	}*/
+		}
+	}
+	if len(results) > 16 {
+		results = results[:16]
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(results); err != nil {

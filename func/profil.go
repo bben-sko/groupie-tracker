@@ -20,7 +20,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 	baseURL := "https://groupietrackers.herokuapp.com/api"
 	var local d.Locations
 	var date d.Dates
-	var artists_id d.Artist_id
+	var artists_id d.Artist
 	var relation d.Relation
 
 	endpoints := map[string]interface{}{

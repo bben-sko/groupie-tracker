@@ -29,6 +29,7 @@ type Artist_id struct {
 type Locations struct {
 	Locations []string `json:"locations"`
 }
+
 type Dates struct {
 	Dates []string `json:"dates"`
 }

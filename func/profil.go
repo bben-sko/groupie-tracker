@@ -5,15 +5,24 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"strings"
 
 	d "gt/data"
 )
 
 func Profil(w http.ResponseWriter, r *http.Request) {
+	var str []string
 	id := r.URL.Query().Get("id")
 	ID, _ := strconv.Atoi(id)
+	str = strings.Split(id, "/")
+
+	if len(str) > 1 {
+		http.Error(w, "not found", http.StatusNotFound)
+		return
+	}
+
 	if ID < 1 || ID > 52 {
-		http.Error(w, "bad request", http.StatusBadRequest)
+		http.Error(w, "bad request ghghgh", http.StatusBadRequest)
 		return
 	}
 
@@ -49,7 +58,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 		"datalocal":    local,
 		"datadate":     date,
 		"datarelation": relation,
-		"data_artist": artists_id,
+		"data_artist":  artists_id,
 	})
 	if err != nil {
 		fmt.Println(err)

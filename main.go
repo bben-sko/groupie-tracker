@@ -12,7 +12,8 @@ func main() {
 	http.HandleFunc("/", g.Home)
 	http.HandleFunc("/searc", g.SearchHandler)
 	http.HandleFunc("/search", g.Search)
-
+	fs := http.FileServer(http.Dir("./template"))
+    http.Handle("/template/", http.StripPrefix("/template/", fs))
 
 	http.HandleFunc("/profil", g.Profil)
 	err := http.ListenAndServe(":8080", nil)

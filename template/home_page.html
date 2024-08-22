@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
 </head>
 
 <h1 class="h1">
@@ -12,7 +14,7 @@
 
 <div class="search-container">
     <form action="/search" method="get" >
-    <input name="s" type="text" id="search" placeholder="Search..."  oninput="showSuggestions(this.value)">
+    <input name="s" type="text" id="search" placeholder="Search..." required  oninput="showSuggestions(this.value)">
 </form>
     <div id="suggestions"></div>
 </div>
@@ -42,9 +44,9 @@ function showSuggestions(query) {
         .then(response => response.json())
         .then(data => {
             console.log("==", data)
-            let suggestions = data.map(item => 
+            let suggestions = data ? data.map(item => 
                 `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`
-            ).join('');
+            ).join('') : "not found";
             document.getElementById("suggestions").innerHTML = suggestions;
         });
 }

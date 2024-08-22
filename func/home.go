@@ -42,10 +42,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				artistName2 := strings.ToLower(ar.Name)
 				if strings.HasPrefix(artistName2, query) {
 					results = append(results, d.SearchResult{
-						Image:        ar.Image,
-						ID:           ar.ID,
-						Name:         ar.Name,
-						Type:         "artist/band",
+						Image: ar.Image,
+						ID:    ar.ID,
+						Name:  ar.Name,
+						Type:  "artist/band",
 					})
 				}
 			}
@@ -53,10 +53,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		artistName := strings.ToLower(artist.Name)
 		if !strings.HasPrefix(artistName, query) && strings.Contains(artistName, query) {
 			results = append(results, d.SearchResult{
-				Image:        artist.Image,
-				ID:           artist.ID,
-				Name:         artist.Name,
-				Type:         "artist/band",
+				Image: artist.Image,
+				ID:    artist.ID,
+				Name:  artist.Name,
+				Type:  "artist/band",
 			})
 		}
 		if strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) {
@@ -87,10 +87,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 					artistName2 := strings.ToLower(member)
 					if strings.HasPrefix(artistName2, query) {
 						results = append(results, d.SearchResult{
-							Image:        ar.Image,
-							ID:           ar.ID,
-							Name:         member,
-							Type:         "member of " + ar.Name,
+							Image: ar.Image,
+							ID:    ar.ID,
+							Name:  member,
+							Type:  "member of " + ar.Name,
 						})
 					}
 				}
@@ -122,10 +122,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		j++
 	}
-
-	/*if len(results) > 16 {
-		results = results[:16]
-	}*/
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(results); err != nil {
@@ -164,9 +160,8 @@ func Search(w http.ResponseWriter, r *http.Request) {
 	q := strings.TrimSpace(r.URL.Query().Get("s"))
 	if q == "" {
 		// w.Header().Set("Content-Type", "application/json")
-		
-			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", nil)
-			return
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 
 	}
 	query := strings.ToLower(q)
@@ -181,10 +176,10 @@ func Search(w http.ResponseWriter, r *http.Request) {
 				artistName2 := strings.ToLower(ar.Name)
 				if strings.HasPrefix(artistName2, query) {
 					results = append(results, d.SearchResult{
-						Image:        ar.Image,
-						ID:           ar.ID,
-						Name:         ar.Name,
-						Type:         "artist/band",
+						Image: ar.Image,
+						ID:    ar.ID,
+						Name:  ar.Name,
+						Type:  "artist/band",
 					})
 				}
 			}
@@ -192,28 +187,28 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		artistName := strings.ToLower(artist.Name)
 		if !strings.HasPrefix(artistName, query) && strings.Contains(artistName, query) {
 			results = append(results, d.SearchResult{
-				Image:        artist.Image,
-				ID:           artist.ID,
-				Name:         artist.Name,
-				Type:         "artist/band",
+				Image: artist.Image,
+				ID:    artist.ID,
+				Name:  artist.Name,
+				Type:  "artist/band",
 			})
 		}
 		if strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) {
 			results = append(results, d.SearchResult{
-				Image:        artist.Image,
-				ID:           artist.ID,
-				Name:         artist.FirstAlbum,
-				Type:         "FirstAlbum of " + artist.Name,
+				Image: artist.Image,
+				ID:    artist.ID,
+				Name:  artist.FirstAlbum,
+				Type:  "FirstAlbum of " + artist.Name,
 			})
 		}
 
 		C_Date := strconv.Itoa(artist.CreationDate)
 		if strings.HasPrefix(strings.ToLower(C_Date), query) {
 			results = append(results, d.SearchResult{
-				Image:        artist.Image,
-				ID:           artist.ID,
-				Name:         C_Date,
-				Type:         "Creation Date of " + artist.Name,
+				Image: artist.Image,
+				ID:    artist.ID,
+				Name:  C_Date,
+				Type:  "Creation Date of " + artist.Name,
 			})
 		}
 
@@ -228,10 +223,10 @@ func Search(w http.ResponseWriter, r *http.Request) {
 					artistName2 := strings.ToLower(member)
 					if strings.HasPrefix(artistName2, query) {
 						results = append(results, d.SearchResult{
-							Image:        ar.Image,
-							ID:           ar.ID,
-							Name:         member,
-							Type:         "member of " + ar.Name,
+							Image: ar.Image,
+							ID:    ar.ID,
+							Name:  member,
+							Type:  "member of " + ar.Name,
 						})
 					}
 				}
@@ -240,10 +235,10 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		for _, member := range artist.Members {
 			if !strings.HasPrefix(strings.ToLower(member), query) && strings.Contains(strings.ToLower(member), query) {
 				results = append(results, d.SearchResult{
-					Image:        artist.Image,
-					ID:           artist.ID,
-					Name:         member,
-					Type:         "member of " + artist.Name,
+					Image: artist.Image,
+					ID:    artist.ID,
+					Name:  member,
+					Type:  "member of " + artist.Name,
 				})
 			}
 		}
@@ -255,35 +250,43 @@ func Search(w http.ResponseWriter, r *http.Request) {
 			if strings.Contains(strings.ToLower(lo), query) {
 				if len(results) < 16 {
 					results = append(results, d.SearchResult{
-						Image:        artists[j].Image,
-						ID:           loc.ID,
-						Name:         lo,
-						Type:         "location " + name,
+						Image: artists[j].Image,
+						ID:    loc.ID,
+						Name:  lo,
+						Type:  "location " + name,
 					})
 				}
 			}
 		}
 		j++
 	}
-
-	/*if len(results) > 16 {
-		results = results[:16]
-	}*/
-
+	// Attempt to parse the main template file
 	tmp, err := template.ParseFiles("template/search.html")
 	if err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 		return
 	}
+
+	// Check if results are nil
 	if results == nil {
-		handleError(w, http.StatusBadRequest, "bad request 400", err)
+		// Attempt to parse the notfound template file
+		tmp1, err := template.ParseFiles("template/notfound.html")
+		if err != nil {
+			// If template parsing fails, handle the error
+			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+			return
+		}
+
+		// Execute the notfound template
+		err = tmp1.Execute(w, nil)
+		if err != nil {
+			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+		}
 		return
 	}
+
+	// Execute the main template with results
 	if err := tmp.Execute(w, results); err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 	}
-	/*w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(results); err != nil {
-		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
-	}*/
 }

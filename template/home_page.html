@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
 </head>
 
 <h1 class="h1">
@@ -12,7 +11,9 @@
 </h1>
 
 <div class="search-container">
+    <form action="/search" method="get">
     <input type="text" id="search" placeholder="Search..."  oninput="showSuggestions(this.value)">
+</form>
     <div id="suggestions"></div>
 </div>
 

@@ -9,7 +9,6 @@ import (
 
 func main() {
 	fmt.Println("http://localhost:8080/")
-	http.Handle("/styles.css", http.FileServer(http.Dir("template")))
 	http.HandleFunc("/", g.Home)
 	http.HandleFunc("/search", g.SearchHandler)
 

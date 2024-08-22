@@ -22,8 +22,16 @@ func handleError(w http.ResponseWriter, status int, msg string, err error) {
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	query := strings.ToLower(r.URL.Query().Get("s"))
+	
 	var results []d.SearchResult
+	q := strings.TrimSpace(r.URL.Query().Get("s"))
+	if q == "" {
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(results); err != nil {
+			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+		}
+	}
+	query := strings.ToLower(q)
 
 	for i, artist := range artists {
 		if len(results) > 16 {
@@ -35,9 +43,12 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				artistName2 := strings.ToLower(ar.Name)
 				if strings.HasPrefix(artistName2, query) {
 					results = append(results, d.SearchResult{
-						ID:   ar.ID,
-						Name: ar.Name,
-						Type: "artist/band",
+						Image:        ar.Image,
+						CreationDate: ar.CreationDate,
+						FirstAlbum:   ar.FirstAlbum,
+						ID:           ar.ID,
+						Name:         ar.Name,
+						Type:         "artist/band",
 					})
 				}
 			}
@@ -45,9 +56,12 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		artistName := strings.ToLower(artist.Name)
 		if !strings.HasPrefix(artistName, query) && strings.Contains(artistName, query) {
 			results = append(results, d.SearchResult{
-				ID:   artist.ID,
-				Name: artist.Name,
-				Type: "artist/band",
+				Image:        artist.Image,
+				CreationDate: artist.CreationDate,
+				FirstAlbum:   artist.FirstAlbum,
+				ID:           artist.ID,
+				Name:         artist.Name,
+				Type:         "artist/band",
 			})
 		}
 		if strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) {
@@ -66,11 +80,8 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				Type: "Creation Date of " + artist.Name,
 			})
 		}
-	
 
-	
-		
-}
+	}
 	for i, artist := range artists {
 		if len(results) > 16 {
 			break
@@ -81,16 +92,19 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 					artistName2 := strings.ToLower(member)
 					if strings.HasPrefix(artistName2, query) {
 						results = append(results, d.SearchResult{
-							ID:   ar.ID,
-							Name: member,
-							Type: "member of " + ar.Name,
+							Image:        ar.Image,
+							CreationDate: ar.CreationDate,
+							FirstAlbum:   ar.FirstAlbum,
+							ID:           ar.ID,
+							Name:         member,
+							Type:         "member of " + ar.Name,
 						})
 					}
 				}
 			}
 		}
 		for _, member := range artist.Members {
-			if !strings.HasPrefix(member, query) && strings.Contains(strings.ToLower(member), query) {
+			if !strings.HasPrefix(strings.ToLower(member), query) && strings.Contains(strings.ToLower(member), query) {
 				results = append(results, d.SearchResult{
 					ID:   artist.ID,
 					Name: member,
@@ -99,25 +113,26 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-			for _, loc := range artis.Index {
-				for _, lo := range loc.Locations{
-				if strings.Contains(strings.ToLower(lo), query) {
-					if len(results) < 16 {
-						results = append(results, d.SearchResult{
-							ID:   loc.ID,
-							Name: lo,
-							Type: "location ",
-						})
-					}
+	j := 0
+	for _, loc := range artis.Index {
+		name := artists[j].Name
+		for _, lo := range loc.Locations {
+			if strings.Contains(strings.ToLower(lo), query) {
+				if len(results) < 16 {
+					results = append(results, d.SearchResult{
+						ID:   loc.ID,
+						Name: lo,
+						Type: "location " + name,
+					})
 				}
 			}
-			}
-		
-		
-	
-	if len(results) > 16 {
-		results = results[:16]
+		}
+		j++
 	}
+
+	/*if len(results) > 16 {
+		results = results[:16]
+	}*/
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(results); err != nil {
@@ -135,7 +150,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 		return
 	}
-	
+
 	if err := fetchAndDecode("https://groupietrackers.herokuapp.com/api/locations", &artis); err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 		return

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     <div class="data">
+        {{ range .}}
+        <a href="/profil?id={{ .ID }}">
+            <div>
+                <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
+                <span class="name">{{ .Name }}</span><br>
+                <span class="FirstAlbum">{{ .Type}}</span>
+            </div>
+        </a>
+        {{ end }}
+    </div>
+</body>
+<script>
+    
+</script>
+
+</html>

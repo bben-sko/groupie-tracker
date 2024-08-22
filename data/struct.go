@@ -34,8 +34,6 @@ type Dates struct {
 
 type SearchResult struct {
 	Image        string `json:"image"`
-	CreationDate int    `json:"creationDate"`
-	FirstAlbum   string `json:"firstAlbum"`
 	ID           int    `json:"id"`
 	Name         string `json:"name"`
 	Type         string `json:"type"`

@@ -11,8 +11,8 @@
 </h1>
 
 <div class="search-container">
-    <form action="/search" method="get">
-    <input type="text" id="search" placeholder="Search..."  oninput="showSuggestions(this.value)">
+    <form action="/search" method="get" >
+    <input name="s" type="text" id="search" placeholder="Search..."  oninput="showSuggestions(this.value)">
 </form>
     <div id="suggestions"></div>
 </div>
@@ -38,7 +38,7 @@ function showSuggestions(query) {
         document.getElementById("suggestions").innerHTML = "";
         return;
     }
-    fetch(`/search?s=${query}`)
+    fetch(`/searc?s=${query}`)
         .then(response => response.json())
         .then(data => {
             console.log("==", data)

@@ -22,7 +22,6 @@ func handleError(w http.ResponseWriter, status int, msg string, err error) {
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	
 	var results []d.SearchResult
 	q := strings.TrimSpace(r.URL.Query().Get("s"))
 	if q == "" {
@@ -44,8 +43,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				if strings.HasPrefix(artistName2, query) {
 					results = append(results, d.SearchResult{
 						Image:        ar.Image,
-						CreationDate: ar.CreationDate,
-						FirstAlbum:   ar.FirstAlbum,
 						ID:           ar.ID,
 						Name:         ar.Name,
 						Type:         "artist/band",
@@ -57,8 +54,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasPrefix(artistName, query) && strings.Contains(artistName, query) {
 			results = append(results, d.SearchResult{
 				Image:        artist.Image,
-				CreationDate: artist.CreationDate,
-				FirstAlbum:   artist.FirstAlbum,
 				ID:           artist.ID,
 				Name:         artist.Name,
 				Type:         "artist/band",
@@ -93,8 +88,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 					if strings.HasPrefix(artistName2, query) {
 						results = append(results, d.SearchResult{
 							Image:        ar.Image,
-							CreationDate: ar.CreationDate,
-							FirstAlbum:   ar.FirstAlbum,
 							ID:           ar.ID,
 							Name:         member,
 							Type:         "member of " + ar.Name,
@@ -164,4 +157,133 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if err := tmp.Execute(w, artists); err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 	}
+}
+
+func Search(w http.ResponseWriter, r *http.Request) {
+	var results []d.SearchResult
+	q := strings.TrimSpace(r.URL.Query().Get("s"))
+	if q == "" {
+		// w.Header().Set("Content-Type", "application/json")
+		
+			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", nil)
+			return
+
+	}
+	query := strings.ToLower(q)
+
+	for i, artist := range artists {
+		if len(results) > 16 {
+			break
+		}
+
+		if i == 0 {
+			for _, ar := range artists {
+				artistName2 := strings.ToLower(ar.Name)
+				if strings.HasPrefix(artistName2, query) {
+					results = append(results, d.SearchResult{
+						Image:        ar.Image,
+						ID:           ar.ID,
+						Name:         ar.Name,
+						Type:         "artist/band",
+					})
+				}
+			}
+		}
+		artistName := strings.ToLower(artist.Name)
+		if !strings.HasPrefix(artistName, query) && strings.Contains(artistName, query) {
+			results = append(results, d.SearchResult{
+				Image:        artist.Image,
+				ID:           artist.ID,
+				Name:         artist.Name,
+				Type:         "artist/band",
+			})
+		}
+		if strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) {
+			results = append(results, d.SearchResult{
+				Image:        artist.Image,
+				ID:           artist.ID,
+				Name:         artist.FirstAlbum,
+				Type:         "FirstAlbum of " + artist.Name,
+			})
+		}
+
+		C_Date := strconv.Itoa(artist.CreationDate)
+		if strings.HasPrefix(strings.ToLower(C_Date), query) {
+			results = append(results, d.SearchResult{
+				Image:        artist.Image,
+				ID:           artist.ID,
+				Name:         C_Date,
+				Type:         "Creation Date of " + artist.Name,
+			})
+		}
+
+	}
+	for i, artist := range artists {
+		if len(results) > 16 {
+			break
+		}
+		if i == 0 {
+			for _, ar := range artists {
+				for _, member := range ar.Members {
+					artistName2 := strings.ToLower(member)
+					if strings.HasPrefix(artistName2, query) {
+						results = append(results, d.SearchResult{
+							Image:        ar.Image,
+							ID:           ar.ID,
+							Name:         member,
+							Type:         "member of " + ar.Name,
+						})
+					}
+				}
+			}
+		}
+		for _, member := range artist.Members {
+			if !strings.HasPrefix(strings.ToLower(member), query) && strings.Contains(strings.ToLower(member), query) {
+				results = append(results, d.SearchResult{
+					Image:        artist.Image,
+					ID:           artist.ID,
+					Name:         member,
+					Type:         "member of " + artist.Name,
+				})
+			}
+		}
+	}
+	j := 0
+	for _, loc := range artis.Index {
+		name := artists[j].Name
+		for _, lo := range loc.Locations {
+			if strings.Contains(strings.ToLower(lo), query) {
+				if len(results) < 16 {
+					results = append(results, d.SearchResult{
+						Image:        artists[j].Image,
+						ID:           loc.ID,
+						Name:         lo,
+						Type:         "location " + name,
+					})
+				}
+			}
+		}
+		j++
+	}
+
+	/*if len(results) > 16 {
+		results = results[:16]
+	}*/
+
+	tmp, err := template.ParseFiles("template/search.html")
+	if err != nil {
+		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+		return
+	}
+	if results == nil {
+		handleError(w, http.StatusBadRequest, "bad request 400", err)
+		return
+	}
+	if err := tmp.Execute(w, results); err != nil {
+		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+	}
+	/*w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(results); err != nil {
+		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+	}*/
 }

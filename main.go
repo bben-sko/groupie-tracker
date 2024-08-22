@@ -10,7 +10,9 @@ import (
 func main() {
 	fmt.Println("http://localhost:8080/")
 	http.HandleFunc("/", g.Home)
-	http.HandleFunc("/search", g.SearchHandler)
+	http.HandleFunc("/searc", g.SearchHandler)
+	http.HandleFunc("/search", g.Search)
+
 
 	http.HandleFunc("/profil", g.Profil)
 	err := http.ListenAndServe(":8080", nil)

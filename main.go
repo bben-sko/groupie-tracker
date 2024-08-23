@@ -12,10 +12,11 @@ func main() {
 	http.HandleFunc("/", g.Home)
 	http.HandleFunc("/searc", g.SearchHandler)
 	http.HandleFunc("/search", g.Search)
+	http.HandleFunc("/profil", g.Profil)
+
 	fs := http.FileServer(http.Dir("./template"))
     http.Handle("/template/", http.StripPrefix("/template/", fs))
-
-	http.HandleFunc("/profil", g.Profil)
+	http.Handle("/style.css", http.FileServer(http.Dir("template")))
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Println(err)

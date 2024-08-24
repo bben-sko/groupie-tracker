@@ -40,6 +40,9 @@ function showSuggestions(query) {
         document.getElementById("suggestions").innerHTML = "";
         return;
     }
+    fetch("https://groupietrackers.herokuapp.com/api/artists").then(res => res.josn()).then(data => {
+        console.log("data", data)
+    })
     fetch(`/searc?s=${query}`)
         .then(response => response.json())
         .then(data => {

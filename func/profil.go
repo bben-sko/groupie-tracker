@@ -10,6 +10,9 @@ import (
 	d "gt/data"
 )
 
+
+
+
 func Profil(w http.ResponseWriter, r *http.Request) {
 	var str []string
 	id := r.URL.Query().Get("id")

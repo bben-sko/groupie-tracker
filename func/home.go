@@ -22,6 +22,16 @@ func handleError(w http.ResponseWriter, status int, msg string, err error) {
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	domain := r.Header.Get("Sec-Fetch-Site")
+	if domain != "same-origin" {
+		handleError(w, http.StatusNotFound, "access denied", nil)
+		return
+	}
+
+	if r.URL.RawQuery == "" {
+		handleError(w, http.StatusNotFound, "404", nil)
+		return
+	}
 	var results []d.SearchResult
 	q := strings.TrimSpace(r.URL.Query().Get("s"))
 	if q == "" {

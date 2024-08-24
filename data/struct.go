@@ -33,8 +33,8 @@ type Dates struct {
 }
 
 type SearchResult struct {
-	Image        string `json:"image"`
-	ID           int    `json:"id"`
-	Name         string `json:"name"`
-	Type         string `json:"type"`
+	Image string `json:"image"`
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Type  string `json:"type"`
 }

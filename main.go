@@ -10,7 +10,7 @@ import (
 func main() {
 	fmt.Println("http://localhost:8081/")
 	http.HandleFunc("/", g.Home)
-	http.HandleFunc("/searc", g.SearchHandler)
+	http.HandleFunc("/search-query", g.SearchHandler)
 	http.HandleFunc("/search", g.Search)
 	http.HandleFunc("/profil", g.Profil)
 

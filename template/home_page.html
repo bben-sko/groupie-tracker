@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 
+
 </head>
 
 <h1 class="h1">
@@ -32,26 +33,9 @@
         </a>
         {{ end }}
     </div>
+
 </section>
+<script src="template/script.js"></script>
 
-<script>
-function showSuggestions(query) {
-    if (query.length == 0) {
-        document.getElementById("suggestions").innerHTML = "";
-        return;
-    }
-    fetch("https://groupietrackers.herokuapp.com/api/artists").then(res => res.josn()).then(data => {
-        console.log("data", data)
-    })
-    fetch(`/searc?s=${query}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("==", data)
-            let suggestions = data ? data.map(item => 
-                `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`
-            ).join('') : "not found";
-            document.getElementById("suggestions").innerHTML = suggestions;
-        });
-}
 
-</script>
+

@@ -40,23 +40,10 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 
 	// Check if results are empty and handle accordingly
 	if results == nil {
-		// Attempt to parse the notfound template file
-		tmp1, err := template.ParseFiles("template/notfound.html")
-		if err != nil {
-			// If template parsing fails, handle the error
-			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
-			return
-		}
-
-		// Execute the notfound template
-		err = tmp1.Execute(w, nil)
-		if err != nil {
-			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
-		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
-	// Execute the search results template with the results
 	if err := tmp.Execute(w, results); err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 	}

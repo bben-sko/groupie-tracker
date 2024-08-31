@@ -26,6 +26,10 @@ func handleError(w http.ResponseWriter, status int, msg string, err error) {
 
 // SearchHandler handles search requests and returns search results in JSON format
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		handleError(w, http.StatusMethodNotAllowed, "method not allowed", nil)
+		return
+	}
 	domain := r.Header.Get("Sec-Fetch-Site")
 	if domain != "same-origin" {
 		handleError(w, http.StatusNotFound, "access denied", nil)
@@ -167,6 +171,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		handleError(w, http.StatusNotFound, "page not found 404", nil)
 		return
+	} 
+	if r.Method != http.MethodGet {
+		handleError(w, http.StatusMethodNotAllowed, "method not allowed", nil)
+		return
 	}
 
 	// Fetch artist data from the API
@@ -196,6 +204,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 // Search handles search requests and displays results
 func Search(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		handleError(w, http.StatusMethodNotAllowed, "method not allowed", nil)
+		return
+	}
 	var results []d.SearchResult
 	q := strings.TrimSpace(r.URL.Query().Get("s"))
 	if q == "" {

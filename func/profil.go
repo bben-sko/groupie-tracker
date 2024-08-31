@@ -11,6 +11,10 @@ import (
 )
 
 func Profil(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		handleError(w, http.StatusMethodNotAllowed, "method not allowed", nil)
+		return
+	}
 	// Initialize a slice to hold split string parts
 	var str []string
 

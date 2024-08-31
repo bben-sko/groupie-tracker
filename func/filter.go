@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+
+
 func Filter(w http.ResponseWriter, r *http.Request) {
 	/*if r.Method != http.MethodPost {
 		handleError(w, http.StatusMethodNotAllowed, "method not allowed", nil)
@@ -17,94 +19,16 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		handleError(w, http.StatusNotFound, "page not found", nil)
 		return
 	}*/
-	creation_date_min, _  :=  strconv.Atoi(r.FormValue("creation_date_min"))
-	creation_date_max, _  := strconv.Atoi(r.FormValue("creation_date_max"))
-	first_album_date_min, _ := strconv.Atoi(r.FormValue("first_album_date_min"))
-	first_album_date_max, _ :=  strconv.Atoi(r.FormValue("first_album_date_max"))
-//	number_of_members := r.FormValue("number_of_members")
-	locUS := r.FormValue("locUS")
-	locUK := r.FormValue("locUK")
-
 	var results []d.Filter
-
 	// Loop through all artists to find matching names and add them to results
-	for _, artist := range artists {
-		fb := artist.FirstAlbum
-		f_album, _ := strconv.Atoi(fb)
-		if f_album >= first_album_date_min && f_album <= first_album_date_max {
+	for i, artist := range artists {
+		if Check_filter(r, artist.CreationDate, artist.Members, artist.FirstAlbum, i) {
 			results = append(results, d.Filter{
 				Image: artist.Image,
 				ID:    artist.ID,
 				Name:  artist.Name,
-				//Type:  "FirstAlbum of " + artist.Name,
 			})
 		}
-
-		// Check if the locUS matches the artist's creation date
-		if artist.CreationDate >= creation_date_min && artist.CreationDate <= creation_date_max {
-			results = append(results, d.Filter{
-				Image: artist.Image,
-				ID:    artist.ID,
-				Name:   artist.Name,
-				//Type:  "Creation Date of " + artist.Name,
-			})
-		}
-	}
-
-	// Loop through all artists again to find matching members and add them to results
-/*	for i, artist := range artists {
-		if len(results) > 16 {
-			// Stop if we have reached the limit of 16 results
-			break
-		}
-		if i == 0 {
-			// On the first iteration, check if any member names start with the locUS
-			for _, ar := range artists {
-				for _, member := range ar.Members {
-					artistName2 := strings.ToLower(member)
-					if strings.HasPrefix(artistName2, locUS) {
-						results = append(results, d.Filter{
-							Image: ar.Image,
-							ID:    ar.ID,
-							Name:  member,
-							Type:  "member of " + ar.Name,
-						})
-					}
-				}
-			}
-		}
-
-		// Check if any member names contain the locUS
-		for _, member := range artist.Members {
-			if !strings.HasPrefix(strings.ToLower(member), locUS) && strings.Contains(strings.ToLower(member), locUS) {
-				results = append(results, d.Filter{
-					Image: artist.Image,
-					ID:    artist.ID,
-					Name:  member,
-					Type:  "member of " + artist.Name,
-				})
-			}
-		}
-	}
-*/
-	// Loop through all location indices to find matching locations and add them to results
-	j := 0
-	for _, loc := range artis.Index {
-		name := artists[j].Name
-		for _, lo := range loc.Locations {
-			// Check if the locUS matches any location name
-			if  strings.HasSuffix(strings.ToLower(lo), locUS) || strings.HasSuffix(strings.ToLower(lo), locUK) {
-				if len(results) < 16 {
-					results = append(results, d.Filter{
-						Image: artists[j].Image,
-						ID:    loc.ID,
-						Name:  name,
-						//Type:  "location " + name,
-					})
-				}
-			}
-		}
-		j++
 	}
 
 	// Attempt to parse the search results template
@@ -135,5 +59,65 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	// Execute the search results template with the results
 	if err := tmp.Execute(w, results); err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+	}
+}
+
+func Check_filter(r *http.Request, CreationDate int, Members []string, first_album string, i int) bool {
+	creation_date_min, _ := strconv.Atoi(r.FormValue("creation_date_min"))
+	creation_date_max, _ := strconv.Atoi(r.FormValue("creation_date_max"))
+	first_album_date := r.FormValue("first_album_date")
+	number_of_members, _ := strconv.Atoi(r.FormValue("number_of_members"))
+	locUS := r.FormValue("locUS")
+	locUK := r.FormValue("locUK")
+	creation_date := false
+	first_album_b := false
+	members := false
+	US := false
+	UK := false
+
+	if r.FormValue("creation_date_min") == "" && r.FormValue("creation_date_max") == "" {
+		creation_date = true
+	} else if CreationDate >= creation_date_min && CreationDate <= creation_date_max {
+		creation_date = true
+	}
+	if first_album_date == "" {
+		first_album_b = true
+	} else if first_album == first_album_date {
+		first_album_b = true
+	}
+	if r.FormValue("number_of_members") == "" {
+		members = true
+	} else {
+		r := 0
+		for range Members {
+			r++
+		}
+		if r == number_of_members {
+			members = true
+		}
+		members = false
+	}
+	if locUS == "" && locUK == "" {
+		US = true
+		UK = true
+	} else {
+		for _, lo := range artis.Index[i].Locations {
+			// Check if the query matches any location name
+			if strings.HasSuffix(lo, locUS) {
+				US = true
+			}
+			if strings.HasSuffix(lo, locUK) {
+				UK = true
+			}
+		}
+		if UK != true && US != true {
+			US = false
+			UK = false
+		}
+	}
+	if  UK == true && US == true && members == true && first_album_b == true && creation_date == true {
+		return true
+	} else {
+		return false
 	}
 }

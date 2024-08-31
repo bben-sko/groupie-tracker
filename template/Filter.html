@@ -13,12 +13,6 @@
     <a href="/">Groupie Tracker</a>
 </h1>
 
-<div class="search-container">
-    <form action="/search" method="get" >
-    <input name="s" type="text" id="search" placeholder="Search..." required  oninput="showSuggestions(this.value)">
-</form>
-    <div id="suggestions"></div>
-</div>
 <form action="/filter" method="post" >
 <div>
     <label>creation date :</label><br>
@@ -51,15 +45,9 @@
             <div>
                 <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
                 <span class="name">{{ .Name }}</span><br>
-                <span class="CreationDate">{{ .CreationDate}}</span><br>
-                <span class="FirstAlbum">{{ .FirstAlbum}}</span>
             </div>
         </a>
         {{ end }}
     </div>
 
 </section>
-<script src="template/script.js"></script>
-
-
-

@@ -13,6 +13,7 @@ func main() {
 	http.HandleFunc("/search-query", g.SearchHandler)
 	http.HandleFunc("/search", g.Search)
 	http.HandleFunc("/profil", g.Profil)
+	http.HandleFunc("/filter", g.Filter)
 
 	fs := http.FileServer(http.Dir("./template"))
     http.Handle("/template/", http.StripPrefix("/template/", fs))

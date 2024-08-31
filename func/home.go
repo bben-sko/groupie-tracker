@@ -168,6 +168,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 
 // Home handles requests to the home page
 func Home(w http.ResponseWriter, r *http.Request) {
+	
 	if r.URL.Path != "/" {
 		handleError(w, http.StatusNotFound, "page not found 404", nil)
 		return

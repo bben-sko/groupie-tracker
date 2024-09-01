@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	d "gt/data"
 	"html/template"
 	"net/http"
@@ -50,7 +51,7 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 func Check_filter(r *http.Request, CreationDate int, Members []string, first_album string, i int) bool {
 	creation_date_min, _ := strconv.Atoi(r.FormValue("creation_date_min"))
 	creation_date_max, _ := strconv.Atoi(r.FormValue("creation_date_max"))
-	first_album_date := r.FormValue("first_album_date")
+	first_album_date := r.FormValue("first_album")
 	number_of_members, _ := strconv.Atoi(r.FormValue("number_of_members"))
 	locUS := r.FormValue("locUS")
 	locUK := r.FormValue("locUK")
@@ -59,7 +60,7 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 	members := false
 	US := false
 	UK := false
-
+	fmt.Println(first_album_date)
 	if r.FormValue("creation_date_min") == "" && r.FormValue("creation_date_max") == "" {
 		creation_date = true
 	} else if CreationDate >= creation_date_min && CreationDate <= creation_date_max {
@@ -88,7 +89,6 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 		UK = true
 	} else {
 		for _, lo := range artis.Index[i].Locations {
-			// Check if the query matches any location name
 			if strings.HasSuffix(lo, locUS) {
 				US = true
 			}
@@ -96,7 +96,7 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 				UK = true
 			}
 		}
-		if UK != true && US != true {
+		if UK == false && US == false {
 			US = false
 			UK = false
 		}

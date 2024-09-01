@@ -30,15 +30,13 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 	}
-
-	// Attempt to parse the search results template
 	tmp, err := template.ParseFiles("template/Filter.html")
 	if err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 		return
 	}
 
-	// Check if results are empty and handle accordingly
+
 	if results == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
@@ -81,8 +79,9 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 		}
 		if r == number_of_members {
 			members = true
-		}
+		}else {
 		members = false
+		}
 	}
 	if locUS == "" && locUK == "" {
 		US = true

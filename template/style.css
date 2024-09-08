@@ -6,6 +6,54 @@ body {
     color: #333;
 }
 
+/* Styles specifically for the filter form */
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    width: 15%; /* Adjust the width as necessary */
+}
+
+/* Style each div inside the filter form */
+.filter-form div {
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+/* Style the labels and inputs */
+.filter-form label {
+    margin-bottom: 3px;
+    font-weight: bold;
+}
+
+.filter-form input {
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style the button in the filter form */
+.filter-form button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-form button:hover {
+    background-color: #0056b3;
+}
+
+
+
 h1,
 .h1 {
     background-color: #847ff1;

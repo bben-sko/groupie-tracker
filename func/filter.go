@@ -1,15 +1,12 @@
 package handler
 
 import (
-	"fmt"
 	d "gt/data"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
-	"strings"
 )
-
-
 
 func Filter(w http.ResponseWriter, r *http.Request) {
 	/*if r.Method != http.MethodPost {
@@ -37,7 +34,6 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	if results == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
@@ -51,40 +47,75 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 func Check_filter(r *http.Request, CreationDate int, Members []string, first_album string, i int) bool {
 	creation_date_min, _ := strconv.Atoi(r.FormValue("creation_date_min"))
 	creation_date_max, _ := strconv.Atoi(r.FormValue("creation_date_max"))
-	first_album_date := r.FormValue("first_album")
-	number_of_members, _ := strconv.Atoi(r.FormValue("number_of_members"))
-	locUS := r.FormValue("locUS")
-	locUK := r.FormValue("locUK")
-	creation_date := false
-	first_album_b := false
-	members := false
-	US := false
-	UK := false
-	fmt.Println(first_album_date)
-	if r.FormValue("creation_date_min") == "" && r.FormValue("creation_date_max") == "" {
-		creation_date = true
-	} else if CreationDate >= creation_date_min && CreationDate <= creation_date_max {
-		creation_date = true
+	first_album_date_min, _ := strconv.Atoi(r.FormValue("first_album_min"))
+	first_album_date_max, _ := strconv.Atoi(r.FormValue("first_album_max"))
+	// number_of_members, _ := strconv.Atoi(r.FormValue("members"))
+	//locUS := r.FormValue("locUS")
+	//locUK := r.FormValue("locUK")
+	// creation_date := false
+	// first_album_b := false
+	// members := false
+	// US := false
+	// UK := false
+
+	if r.FormValue("creation_date_min") != "" && r.FormValue("creation_date_max") != "" {
+		if r.FormValue("creation_date_min") == "" {
+			creation_date_min = 1970
+		}
+		if r.FormValue("creation_date_max") == "" {
+
+			creation_date_max = 2024
+		}
+
+		if !(CreationDate >= creation_date_min && CreationDate <= creation_date_max) {
+			return false
+		}
 	}
-	if first_album_date == "" {
-		first_album_b = true
-	} else if first_album == first_album_date {
-		first_album_b = true
+
+	if r.FormValue("first_album_min") != "" || r.FormValue("first_album_max") != "" {
+		if r.FormValue("first_album_min") == "" {
+			first_album_date_min = 1978
+		}
+		if r.FormValue("first_album_max") == "" {
+			first_album_date_max = 2024
+		}
+
+		first_album_date, err := strconv.Atoi(first_album[6:])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if !(first_album_date >= first_album_date_min && first_album_date <= first_album_date_max) {
+			return false
+		}
 	}
-	if r.FormValue("number_of_members") == "" {
-		members = true
+
+	// if r.FormValue("members") == "" {
+	// 	return false
+	// }
+
+	numMembers, err := strconv.Atoi(r.FormValue("members"))
+	if err != nil {
+		// Handle the error if the conversion fails (e.g., invalid input)
+		log.Fatal(err)
+	}
+	if len(Members) != numMembers {
+		return false
+	}
+
+	/*if !(r.FormValue("number_of_members") == "") {
+		return false
 	} else {
 		r := 0
 		for range Members {
 			r++
 		}
-		if r == number_of_members {
-			members = true
-		}else {
-		members = false
+		if !(r == number_of_members) {
+			return false
+		} else {
+			return true
 		}
 	}
-	if locUS == "" && locUK == "" {
+	/*if locUS == "" && locUK == "" {
 		US = true
 		UK = true
 	} else {
@@ -101,9 +132,10 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 			UK = false
 		}
 	}
-	if  UK == true && US == true && members == true && first_album_b == true && creation_date == true {
+	if UK == true && US == true && members == true && first_album_b == true && creation_date == true {
 		return true
 	} else {
 		return false
-	}
+	}*/
+	return true
 }

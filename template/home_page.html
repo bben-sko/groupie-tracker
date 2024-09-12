@@ -14,30 +14,38 @@
 </h1>
 
 <div class="search-container">
-    <form action="/search" method="get" >
-    <input name="s" type="text" id="search" placeholder="Search..." required  oninput="showSuggestions(this.value)">
-</form>
+    <form action="/search" method="get">
+        <input name="s" type="text" id="search" placeholder="Search..." required oninput="showSuggestions(this.value)">
+    </form>
     <div id="suggestions"></div>
 </div>
 <form class="filter-form" action="/filter" method="post">
     <div>
         <label>Creation date :</label><br>
-        <input type="number" id="creation_date_min" value="this.value" max="2015" min="1958" name="creation_date_min"><label for="creation_date_min">min</label>
-        <input type="number" id="creation_date_max" value="this.value" max="2015" min="1958" name="creation_date_max"><label for="creation_date_max">max</label>
+        <input type="number" id="creation_date_min" value="this.value" max="2015" min="1958"
+            name="creation_date_min"><label for="creation_date_min">min</label>
+        <input type="number" id="creation_date_max" value="this.value" max="2015" min="1958"
+            name="creation_date_max"><label for="creation_date_max">max</label>
     </div>
+
     <div>
         <label>First album date :</label><br>
-        <input type="date" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album">
+        <input type="number" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_max">
+        <input type="number" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_min">
     </div>
-    <div>
-        <label>Number of members :</label><br>
-        <input type="number" id="num_members" max="15" min="0" value="this.value" name="number_of_members">
+
+    <div class="range-container">
+        <label for="range">Members: </label>
+        <input type="range" id="range" name="members" min="1" max="8" value="4" oninput="updateRange()">
+        <span id="rangeValue">4</span>
     </div>
+
     <div>
         <label>Location :</label><br>
         <input type="checkbox" id="locUS" value="usa" name="locUS"><label for="locUS">US</label>
         <input type="checkbox" id="locUK" value="uk" name="locUK"><label for="locUK">UK</label>
     </div>
+
     <button>Go</button>
 </form>
 <section class="cart-art">
@@ -56,6 +64,12 @@
 
 </section>
 <script src="template/script.js"></script>
-
-
-
+<script>
+    function updateRange() {
+        const range = document.getElementById('range');
+        const rangeValue = document.getElementById('rangeValue');
+        
+        // Update displayed value
+        rangeValue.textContent = range.value;
+    }
+</script>

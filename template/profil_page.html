@@ -4,12 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>Profil {{ .data_artist.Name}}</title>
-
 </head>
 
 <body>
-    <h1> <a href="/">Groupie Tracker</a> </h1>
     <button type="button" onclick="window.location.href='/'">Back</button><br>
     <img src="{{ .data_artist.Image}}" alt="{{ .data_artist.Name}}" class="Image"><br>
     <span class="name">{{ .data_artist.Name }}</span><br>
@@ -62,7 +61,7 @@
             </ul>
         </div>
     </section>
-
+   
 
 </body>
 

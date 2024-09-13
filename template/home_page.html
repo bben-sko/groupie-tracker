@@ -4,47 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="style.css">
 
+
+</head>
+<body>
 <h1 class="h1">
     <a href="/">Groupie Tracker</a>
 </h1>
 
 <div class="search-container">
-    <input type="text" id="search" placeholder="Search..."  oninput="showSuggestions(this.value)">
+    <form action="/search" method="get">
+        <input name="s" type="text" id="search" placeholder="Search..." required oninput="showSuggestions(this.value)">
+    </form>
     <div id="suggestions"></div>
 </div>
-
-<section class="cart-art">
-    <div class="data">
-        {{ range .}}
-        <a href="/profil?id={{ .ID }}">
-            <div>
-                <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
-                <span class="name">{{ .Name }}</span><br>
-                <span class="CreationDate">{{ .CreationDate}}</span><br>
-                <span class="FirstAlbum">{{ .FirstAlbum}}</span>
-            </div>
-        </a>
-        {{ end }}
+<form class="filter-form" action="/filter" method="post">
+    <div>
+        <label>Creation date :</label><br>
+        <input type="number" id="creation_date_min" value="this.value" max="2015" min="1958"
+            name="creation_date_min"><label for="creation_date_min">min</label>
+        <input type="number" id="creation_date_max" value="this.value" max="2015" min="1958"
+            name="creation_date_max"><label for="creation_date_max">max</label>
     </div>
-</section>
 
+    <div>
+        <label>First album date :</label><br>
+        <input type="number" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_max">
+        <input type="number" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_min">
+    </div>
+
+    <div class="range-container">
+        <label for="range">Members: </label>
+        <input type="range" id="range" name="members" min="1" max="8" value="4" oninput="updateRange()">
+        <span id="rangeValue">4</span>
+    </div>
+    
+    <h1>Sélectionnez une ville</h1>
+        <select name="city">
+            {{ range  .Loc.Index }}
+            {{ range .Locations }}
+          
+            <option value="{{ . }}">{{ . }}</option>
+        
+            {{ end }}
+            {{ end }}
+        </select>
+        <button type="submit">Go</button>
+    
+</form>
+    <section class="cart-art">
+        <div class="data">
+            {{ range .Da }}
+                <a href="/profil?id={{ .ID }}">
+                    <div>
+                        <img src="{{ .Image }}" alt="{{ .Name }}" class="Image"><br>
+                        <span class="name">{{ .Name }}</span><br>
+                        <span class="CreationDate">{{ .CreationDate }}</span><br>
+                        <span class="FirstAlbum">{{ .FirstAlbum }}</span>
+                    </div>
+                </a>
+            {{ end }}
+        </div>
+    </section>
+<script src="template/script.js"></script>
 <script>
-function showSuggestions(query) {
-    if (query.length == 0) {
-        document.getElementById("suggestions").innerHTML = "";
-        return;
+    function updateRange() {
+        const range = document.getElementById('range');
+        const rangeValue = document.getElementById('rangeValue');
+        
+        // Update displayed value
+        rangeValue.textContent = range.value;
     }
-    fetch(`/search?s=${query}`)
-        .then(response => response.json())
-        .then(data => {
-            let suggestions = data.map(item => 
-                `<div><a href="/profil?id=${item.id}">${item.name} - ${item.type}</a></div>`
-            ).join('');
-            document.getElementById("suggestions").innerHTML = suggestions;
-        });
-}
-
 </script>
+</body>

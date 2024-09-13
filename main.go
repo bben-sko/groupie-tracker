@@ -9,15 +9,11 @@ import (
 
 func main() {
 	fmt.Println("http://localhost:8081/")
+	http.Handle("/styles.css", http.FileServer(http.Dir("template")))
 	http.HandleFunc("/", g.Home)
-	http.HandleFunc("/search-query", g.SearchHandler)
-	http.HandleFunc("/search", g.Search)
-	http.HandleFunc("/profil", g.Profil)
-	http.HandleFunc("/filter", g.Filter)
+	http.HandleFunc("/search", g.SearchHandler)
 
-	fs := http.FileServer(http.Dir("./template"))
-    http.Handle("/template/", http.StripPrefix("/template/", fs))
-	http.Handle("/style.css", http.FileServer(http.Dir("template")))
+	http.HandleFunc("/profil", g.Profil)
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		fmt.Println(err)

@@ -1,11 +1,11 @@
 package handler
 
 import (
-	d "gt/data"
 	"html/template"
-	"log"
 	"net/http"
-	"strconv"
+	"strings"
+
+	d "gt/data"
 )
 
 func Filter(w http.ResponseWriter, r *http.Request) {
@@ -45,25 +45,25 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 }
 
 func Check_filter(r *http.Request, CreationDate int, Members []string, first_album string, i int) bool {
-	creation_date_min, _ := strconv.Atoi(r.FormValue("creation_date_min"))
+	/*creation_date_min, _ := strconv.Atoi(r.FormValue("creation_date_min"))
 	creation_date_max, _ := strconv.Atoi(r.FormValue("creation_date_max"))
 	first_album_date_min, _ := strconv.Atoi(r.FormValue("first_album_min"))
 	first_album_date_max, _ := strconv.Atoi(r.FormValue("first_album_max"))
 	// number_of_members, _ := strconv.Atoi(r.FormValue("members"))
-	//locUS := r.FormValue("locUS")
-	//locUK := r.FormValue("locUK")
+	// locUS := r.FormValue("locUS")
+	// locUK := r.FormValue("locUK")
 	// creation_date := false
 	// first_album_b := false
 	// members := false
 	// US := false
-	// UK := false
+	// UK := false*/
+	locUK := r.FormValue("cities")
 
-	if r.FormValue("creation_date_min") != "" && r.FormValue("creation_date_max") != "" {
+	/*if r.FormValue("creation_date_min") != "" && r.FormValue("creation_date_max") != "" {
 		if r.FormValue("creation_date_min") == "" {
 			creation_date_min = 1970
 		}
 		if r.FormValue("creation_date_max") == "" {
-
 			creation_date_max = 2024
 		}
 
@@ -137,5 +137,15 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 	} else {
 		return false
 	}*/
+	//fmt.Println(locUK)
+	k := 0
+	for _, lo := range artis.Index[i].Locations {
+		if strings.HasSuffix(lo, locUK) {
+			k++
+		}
+	}
+	if k == 0 {
+		return false
+	}
 	return true
 }

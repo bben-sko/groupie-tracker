@@ -8,7 +8,7 @@
 
 
 </head>
-
+<body>
 <h1 class="h1">
     <a href="/">Groupie Tracker</a>
 </h1>
@@ -39,30 +39,30 @@
         <input type="range" id="range" name="members" min="1" max="8" value="4" oninput="updateRange()">
         <span id="rangeValue">4</span>
     </div>
-
-    <div>
-        <label>Location :</label><br>
-        <input type="checkbox" id="locUS" value="usa" name="locUS"><label for="locUS">US</label>
-        <input type="checkbox" id="locUK" value="uk" name="locUK"><label for="locUK">UK</label>
-    </div>
-
-    <button>Go</button>
-</form>
-<section class="cart-art">
-    <div class="data">
-        {{ range .}}
-        <a href="/profil?id={{ .ID }}">
-            <div>
-                <img src="{{.Image}}" alt="{{ .Name}}" class="Image"><br>
-                <span class="name">{{ .Name }}</span><br>
-                <span class="CreationDate">{{ .CreationDate}}</span><br>
-                <span class="FirstAlbum">{{ .FirstAlbum}}</span>
-            </div>
-        </a>
-        {{ end }}
-    </div>
-
-</section>
+    {{ .Loc.Locations }}
+    <h1>Sélectionnez une ville</h1>
+        <select name="city">
+            {{ range .Loc.Locations }}
+            <option value="{{ . }}">{{ . }}</option>
+            {{ end }}
+        </select>
+        <button type="submit">Go</button>
+       
+    <section class="cart-art">
+        <div class="data">
+            {{ .Da }}
+            {{ range .Da }}
+                <a href="/profil?id={{ .ID }}">
+                    <div>
+                        <img src="{{ .Image }}" alt="{{ .Name }}" class="Image"><br>
+                        <span class="name">{{ .Name }}</span><br>
+                        <span class="CreationDate">{{ .CreationDate }}</span><br>
+                        <span class="FirstAlbum">{{ .FirstAlbum }}</span>
+                    </div>
+                </a>
+            {{ end }}
+        </div>
+    </section>
 <script src="template/script.js"></script>
 <script>
     function updateRange() {
@@ -73,3 +73,4 @@
         rangeValue.textContent = range.value;
     }
 </script>
+</body>

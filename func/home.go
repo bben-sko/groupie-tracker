@@ -196,9 +196,13 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 		return
 	}
-
+	viewData := d.ViewDat{
+        Da:  artists,
+        Loc: artis,
+    }
+	
 	// Execute the template with artist data
-	if err := tmp.Execute(w, artists); err != nil {
+	if err := tmp.Execute(w, viewData); err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
 	}
 }

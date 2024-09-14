@@ -42,12 +42,10 @@
     
     <h1>Sélectionnez une ville</h1>
         <select name="city">
-            {{ range  .Loc.Index }}
-            {{ range .Locations }}
+            {{ range  .Loc }}
           
-            <option value="{{ . }}">{{ . }}</option>
+                <option value="{{ . }}">{{ . }}</option>
         
-            {{ end }}
             {{ end }}
         </select>
         <button type="submit">Go</button>

@@ -12,31 +12,6 @@
 <h1 class="h1">
     <a href="/">Groupie Tracker</a>
 </h1>
-
-<form action="/filter" method="post" >
-<div>
-    <label>creation date :</label><br>
-    <input type="number" id="creation_date_min"  value="this.value" max="2015" min="1958" name="creation_date_min"><label for="creation_date_min">min</label>
-    <input type="number" id="creation_date_max"  value="this.value" max="2015" min="1958" name="creation_date_max"><label for="creation_date_max">max</label>
-</div>
-<div>
-    <label>first album date : </label><br>
-   <input type="date" id="first_album_date"  value="this.value" max="2020" min="1958" name="first_album_date_min">
-</div>
-<div>
-    <label for="">number of members :</label>
-    <input type="number" id="num_members" max="15" min="0" value="this.value" name="number_of_members">
-</div>
-<div>
-    <label for="">Location :</label><br>
-    <input type="checkbox" id="locUS" value="usa" name="locUS"><label for="locUS">US</label>
-    <input type="checkbox" id="locUK" value="uk" name="locUK"><label for="locUK">UK</label>
-  <!--  <input type="checkbox" id="locEU" value="EU"><label for="locEU">EU</label>
-    <input type="checkbox" id="locOther" value="Other"><label for="locOther">Other</label>-->
-</div>
-
-<button>go</button>
-</form>
 <section class="cart-art">
     <div class="data">
         {{ range .}}

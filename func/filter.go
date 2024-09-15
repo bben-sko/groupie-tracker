@@ -3,20 +3,21 @@ package handler
 import (
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 
 	d "gt/data"
 )
 
 func Filter(w http.ResponseWriter, r *http.Request) {
-	/*if r.Method != http.MethodPost {
+	if r.Method != http.MethodPost {
 		handleError(w, http.StatusMethodNotAllowed, "method not allowed", nil)
 		return
 	}
 	if r.URL.Path != "/filter" {
 		handleError(w, http.StatusNotFound, "page not found", nil)
 		return
-	}*/
+	}
 	var results []d.Filter
 	// Loop through all artists to find matching names and add them to results
 	for i, artist := range artists {
@@ -45,21 +46,21 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 }
 
 func Check_filter(r *http.Request, CreationDate int, Members []string, first_album string, i int) bool {
-	/*creation_date_min, _ := strconv.Atoi(r.FormValue("creation_date_min"))
+	creation_date_min, _ := strconv.Atoi(r.FormValue("creation_date_min"))
 	creation_date_max, _ := strconv.Atoi(r.FormValue("creation_date_max"))
 	first_album_date_min, _ := strconv.Atoi(r.FormValue("first_album_min"))
 	first_album_date_max, _ := strconv.Atoi(r.FormValue("first_album_max"))
-	// number_of_members, _ := strconv.Atoi(r.FormValue("members"))
-	// locUS := r.FormValue("locUS")
-	// locUK := r.FormValue("locUK")
-	// creation_date := false
-	// first_album_b := false
-	// members := false
-	// US := false
-	// UK := false*/
-	locUK := r.FormValue("cities")
+	var str []int
+	for i := 1; i < 9; i++ {
+		m, err := strconv.Atoi(r.FormValue("num_members_" + strconv.Itoa(i)))
+		if err != nil {
+			continue
+		}
+		str = append(str, m)
+	}
+	locUK := r.FormValue("city")
 
-	/*if r.FormValue("creation_date_min") != "" && r.FormValue("creation_date_max") != "" {
+	if r.FormValue("creation_date_min") != "" || r.FormValue("creation_date_max") != "" {
 		if r.FormValue("creation_date_min") == "" {
 			creation_date_min = 1970
 		}
@@ -82,70 +83,49 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 
 		first_album_date, err := strconv.Atoi(first_album[6:])
 		if err != nil {
-			log.Fatal(err)
+			return false
 		}
 		if !(first_album_date >= first_album_date_min && first_album_date <= first_album_date_max) {
 			return false
 		}
 	}
 
-	// if r.FormValue("members") == "" {
-	// 	return false
-	// }
-
 	numMembers, err := strconv.Atoi(r.FormValue("members"))
 	if err != nil {
-		// Handle the error if the conversion fails (e.g., invalid input)
-		log.Fatal(err)
+		return false
 	}
 	if len(Members) != numMembers {
 		return false
 	}
 
-	/*if !(r.FormValue("number_of_members") == "") {
-		return false
-	} else {
+	if str != nil {
 		r := 0
 		for range Members {
 			r++
 		}
-		if !(r == number_of_members) {
+		if !Is_here(str, r) {
 			return false
-		} else {
+		}
+	}
+	if locUK != "" {
+		k := 0
+		for _, lo := range artis.Index[i].Locations {
+			if strings.HasSuffix(lo, locUK) {
+				k++
+			}
+		}
+		if k == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func Is_here(str []int, r int) bool {
+	for i := 0; i < len(str); i++ {
+		if str[i] == r {
 			return true
 		}
 	}
-	/*if locUS == "" && locUK == "" {
-		US = true
-		UK = true
-	} else {
-		for _, lo := range artis.Index[i].Locations {
-			if strings.HasSuffix(lo, locUS) {
-				US = true
-			}
-			if strings.HasSuffix(lo, locUK) {
-				UK = true
-			}
-		}
-		if UK == false && US == false {
-			US = false
-			UK = false
-		}
-	}
-	if UK == true && US == true && members == true && first_album_b == true && creation_date == true {
-		return true
-	} else {
-		return false
-	}*/
-	//fmt.Println(locUK)
-	k := 0
-	for _, lo := range artis.Index[i].Locations {
-		if strings.HasSuffix(lo, locUK) {
-			k++
-		}
-	}
-	if k == 0 {
-		return false
-	}
-	return true
+	return false
 }

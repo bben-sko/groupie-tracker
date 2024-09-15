@@ -201,7 +201,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		Da:  artists,
 		Loc: h,
 	}
-	fmt.Println(viewData.Loc)
 	// Execute the template with artist data
 	if err := tmp.Execute(w, viewData); err != nil {
 		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)

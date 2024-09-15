@@ -22,50 +22,43 @@
 <form class="filter-form" action="/filter" method="post">
     <div>
         <label>Creation date :</label><br>
-        <input type="number" id="creation_date_min" value="this.value" max="2015" min="1958"
+        <input type="range" id="creation_date_min" value="this.value" max="2015" min="1958"
             name="creation_date_min"><label for="creation_date_min">min</label>
-        <input type="number" id="creation_date_max" value="this.value" max="2015" min="1958"
+        <input type="range" id="creation_date_max" value="this.value" max="2015" min="1958"
             name="creation_date_max"><label for="creation_date_max">max</label>
     </div>
 
     <div>
         <label>First album date :</label><br>
-        <input type="number" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_max">
-        <input type="number" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_min">
+        <input type="range" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_max">
+        <input type="range" id="first_album_date" value="this.value" max="2020" min="1958" name="first_album_min">
     </div>
 
     <div class="range-container">
         <label>Number of Members:</label>
-    <div>
-        <input type="checkbox" id="num_members_1" name="members" value="1">
+    
+        <input type="checkbox" name="num_members_1" id="members" value="1">
         <label for="num_members_1">1</label>
-    </div>
-    <div>
-        <input type="checkbox" id="num_members_2" name="members" value="2">
+        <input type="checkbox" name="num_members_2" id="members" value="2">
         <label for="num_members_2">2</label>
-    </div>
-    <div>
-        <input type="checkbox" id="num_members_3" name="members" value="3">
+    
+    
+        <input type="checkbox" name="num_members_3" id="members" value="3">
         <label for="num_members_3">3</label>
-    </div>
-    <div>
-        <input type="checkbox" id="num_members_4" name="members" value="4">
+    
+        <input type="checkbox" name="num_members_4" id="members" value="4">
         <label for="num_members_4">4</label>
-    </div>
-    <div>
-        <input type="checkbox" id="num_members_5" name="members" value="5">
+    
+        <input type="checkbox" name="num_members_5" id="members" value="5">
         <label for="num_members_5">5</label>
-    </div>
-    <div>
-        <input type="checkbox" id="num_members_6" name="members" value="6">
+    
+        <input type="checkbox" name="num_members_6" id="members" value="6">
         <label for="num_members_6">6</label>
-    </div>
-    <div>
-        <input type="checkbox" id="num_members_7" name="members" value="7">
+    
+        <input type="checkbox" name="num_members_7" id="members" value="7">
         <label for="num_members_7">7</label>
-    </div>
-    <div>
-        <input type="checkbox" id="num_members_8" name="members" value="8">
+    
+        <input type="checkbox" name="num_members_8" id="members" value="8">
         <label for="num_members_8">8</label>
     </div>
         
@@ -73,6 +66,7 @@
     
     <h1>Sélectionnez une ville</h1>
         <select name="city">
+            <option value="">--Please choose an option--</option>
             {{ range  .Loc }}
           
                 <option value="{{ . }}">{{ . }}</option>

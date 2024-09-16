@@ -50,72 +50,60 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 	creation_date_max, _ := strconv.Atoi(r.FormValue("creation_date_max"))
 	first_album_date_min, _ := strconv.Atoi(r.FormValue("first_album_min"))
 	first_album_date_max, _ := strconv.Atoi(r.FormValue("first_album_max"))
-	var str []int
-	for i := 1; i < 9; i++ {
-		m, err := strconv.Atoi(r.FormValue("num_members_" + strconv.Itoa(i)))
-		if err != nil {
-			continue
+
+	// Parse member counts
+	var selectedMembers []int
+	for j := 1; j <= 8; j++ {
+		if r.FormValue("num_members_"+strconv.Itoa(j)) != "" {
+			selectedMembers = append(selectedMembers, j)
 		}
-		str = append(str, m)
 	}
+
 	locUK := r.FormValue("city")
 
+	// Filter by creation date
 	if r.FormValue("creation_date_min") != "" || r.FormValue("creation_date_max") != "" {
-		if r.FormValue("creation_date_min") == "" {
-			creation_date_min = 1970
-		}
-		if r.FormValue("creation_date_max") == "" {
-			creation_date_max = 2024
-		}
-
 		if !(CreationDate >= creation_date_min && CreationDate <= creation_date_max) {
 			return false
 		}
 	}
 
+	// Filter by first album date
 	if r.FormValue("first_album_min") != "" || r.FormValue("first_album_max") != "" {
-		if r.FormValue("first_album_min") == "" {
-			first_album_date_min = 1978
-		}
-		if r.FormValue("first_album_max") == "" {
-			first_album_date_max = 2024
-		}
-
-		first_album_date, err := strconv.Atoi(first_album[6:])
-		if err != nil {
-			return false
-		}
-		if !(first_album_date >= first_album_date_min && first_album_date <= first_album_date_max) {
+		first_album_date, err := strconv.Atoi(first_album[6:]) // Assuming date at the end of the string
+		if err != nil || !(first_album_date >= first_album_date_min && first_album_date <= first_album_date_max) {
 			return false
 		}
 	}
 
-	if str != nil {
-		r := 0
-		for range Members {
-			r++
-		}
-		if !Is_here(str, r) {
+	// Filter by number of members
+	if len(selectedMembers) > 0 {
+		if !Is_here(selectedMembers, len(Members)) {
 			return false
 		}
 	}
+
+	// Filter by location
 	if locUK != "" {
-		k := 0
-		for _, lo := range artis.Index[i].Locations {
-			if strings.HasSuffix(lo, locUK) {
-				k++
+		found := false
+		for _, location := range artis.Index[i].Locations {
+			if strings.HasSuffix(location, locUK) {
+				found = true
+				break
 			}
 		}
-		if k == 0 {
+		if !found {
 			return false
 		}
 	}
+
 	return true
 }
 
-func Is_here(str []int, r int) bool {
-	for i := 0; i < len(str); i++ {
-		if str[i] == r {
+// This function checks if the number of members matches the selected ones
+func Is_here(selected []int, actual int) bool {
+	for _, s := range selected {
+		if s == actual {
 			return true
 		}
 	}

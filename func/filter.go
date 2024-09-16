@@ -62,14 +62,14 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 	locUK := r.FormValue("city")
 
 	// Filter by creation date
-	if r.FormValue("creation_date_min") != "" || r.FormValue("creation_date_max") != "" {
+	if r.FormValue("creation_date_min") != "" || r.FormValue("creation_date_max") != ""  {
 		if !(CreationDate >= creation_date_min && CreationDate <= creation_date_max) {
 			return false
 		}
 	}
 
 	// Filter by first album date
-	if r.FormValue("first_album_min") != "" || r.FormValue("first_album_max") != "" {
+	if r.FormValue("first_album_min") != "" || r.FormValue("first_album_max") != ""  {
 		first_album_date, err := strconv.Atoi(first_album[6:]) // Assuming date at the end of the string
 		if err != nil || !(first_album_date >= first_album_date_min && first_album_date <= first_album_date_max) {
 			return false

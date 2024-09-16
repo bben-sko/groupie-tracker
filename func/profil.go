@@ -35,8 +35,20 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 
 	// Validate the 'ID' to ensure it is within the valid range
 	if ID < 1 || ID > 52 {
-		http.Error(w, "not found", http.StatusNotFound)
+		tmp1, err := template.ParseFiles("template/notfound.html")
+		if err != nil {
+			// If template parsing fails, handle the error
+			handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+			return
+		}
+
+		// Execute the notfound template
+		err = tmp1.Execute(w, nil)
+		if err != nil {
+			handleError(w, http.StatusNotFound, "page not found 404!", err)
+		}
 		return
+
 	}
 
 	// Base URL for the API requests

@@ -10,13 +10,16 @@ body {
 .filter-form {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     margin-left: auto;
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #f9f9f9;
-    width: 15%; /* Adjust the width as necessary */
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    max-width: 220px;
 }
 
 /* Style each div inside the filter form */
@@ -54,13 +57,18 @@ body {
 
 
 
-h1,
-.h1 {
+.h1{
     background-color: #847ff1;
     padding: 20px;
     text-align: center;
     margin: 0;
 }
+
+.select-city {
+    font-size: 150%;
+    align-items: center;
+}
+
 
 h1 a,
 .h1 a {

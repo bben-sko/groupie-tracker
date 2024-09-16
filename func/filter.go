@@ -90,14 +90,6 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 		}
 	}
 
-	numMembers, err := strconv.Atoi(r.FormValue("members"))
-	if err != nil {
-		return false
-	}
-	if len(Members) != numMembers {
-		return false
-	}
-
 	if str != nil {
 		r := 0
 		for range Members {

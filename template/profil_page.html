@@ -1,69 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil {{ .data_artist.Name}}</title>
-
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <h1> <a href="/">Groupie Tracker</a> </h1>
-    <button type="button" onclick="window.location.href='/'">Back</button><br>
-    <img src="{{ .data_artist.Image}}" alt="{{ .data_artist.Name}}" class="Image"><br>
-    <span class="name">{{ .data_artist.Name }}</span><br>
-    <span class="CreationDate">{{ .data_artist.CreationDate}}</span><br>
-    <span class="FirstAlbum">{{ .data_artist.FirstAlbum}}</span>
-    <section class="cart-art">
-        <div>
-            <li> Members :
-                <ul>
+    <div class="profile-container">
+        <h1 class="h1"><a href="/" class="back-button">Groupie Tracker</a></h1>
+        <button type="button" onclick="window.location.href='/'" class="back-button">Back</button><br>
+        
+        <div class="profile-header">
+            <img src="{{ .data_artist.Image}}" alt="{{ .data_artist.Name}}" class="profile-image"><br>
+            <div class="profile-info">
+                <span class="profile-name">{{ .data_artist.Name }}</span><br>
+                <span class="profile-details">{{ .data_artist.CreationDate}}</span><br>
+                <span class="profile-details">{{ .data_artist.FirstAlbum}}</span>
+            </div>
+        </div>
 
+        <section class="cart-art">
+            <div class="profile-section">
+                <h2>Members</h2>
+                <ul>
                     {{ range .data_artist.Members }}
-                    <li> {{ . }}</li>
+                    <li>{{ . }}</li>
                     {{ end }}
                 </ul>
-            </li>
-        </div>
-        <div>
-            <li> Location:
+            </div>
+            
+            <div class="profile-section">
+                <h2>Location</h2>
                 <ul>
                     {{ range .datalocal.Locations }}
-                    <li> {{ . }}</li>
+                    <li>{{ . }}</li>
                     {{ end }}
                 </ul>
-            </li>
-        </div>
-        <br>
-        <div>
-            <li>Date :
+            </div>
+            
+            <div class="profile-section">
+                <h2>Date</h2>
                 <ul>
-
                     {{ range .datadate.Dates }}
-                    <li> {{ . }}</li>
+                    <li>{{ . }}</li>
                     {{ end }}
                 </ul>
-            </li>
-        </div>
-        <br>
-        <h2>Dates and Locations:</h2>
-        <div>
-            <ul>
-                {{ range $key, $dates := .datarelation.DatesLocations }}
-                <li>Location: {{ $key }}
-                    <ul>
-                        {{ range $dates }}
-                        <li>Date: {{ . }}</li>
-                        {{ end }}
-                    </ul>
-                </li>
-                {{ end }}
-            </ul>
-        </div>
-    </section>
-
-
+            </div>
+            
+            <div class="profile-section">
+                <h2>Dates and Locations:</h2>
+                <div class="dates-locations">
+                    {{ range $key, $dates := .datarelation.DatesLocations }}
+                    <div class="date-location-item">
+                        <h3>{{ $key }}</h3>
+                        <ul>
+                            {{ range $dates }}
+                            <li>{{ . }}</li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+        </section>
+    </div>
 </body>
-
 </html>

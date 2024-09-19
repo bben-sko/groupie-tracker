@@ -5,7 +5,17 @@ import (
 	"net/http"
 
 	g "gt/func"
+	handler "gt/func"
 )
+
+func servCss(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/assets/" {
+		handler.ErrorPages(w, 404, "Page not found")
+		return
+	}
+	fs := http.FileServer(http.Dir("./assets"))
+	http.StripPrefix("/assets/", fs).ServeHTTP(w, r)
+}
 
 func main() {
 	fmt.Println("http://localhost:8081/")
@@ -15,10 +25,8 @@ func main() {
 	http.HandleFunc("/profil", g.Profil)
 	http.HandleFunc("/filter", g.Filter)
 
-	fs := http.FileServer(http.Dir("./template"))
-	http.Handle("/template/", http.StripPrefix("/template/", fs))
-	http.Handle("/style.css", http.FileServer(http.Dir("template")))
-	//http.Handle("/style1.css", http.FileServer(http.Dir("template")))
+	http.HandleFunc("/assets/", servCss)
+
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		fmt.Println(err)

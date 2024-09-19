@@ -3,7 +3,6 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
-    color: #333;
 }
 
 /* Styles specifically for the filter form */
@@ -11,7 +10,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-left: auto;
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -25,7 +23,7 @@ body {
 /* Style each div inside the filter form */
 .filter-form div {
     margin-bottom: 10px;
-    text-align: right;
+    text-align: left;
 }
 
 /* Style the labels and inputs */
@@ -55,20 +53,12 @@ body {
     background-color: #0056b3;
 }
 
-
-
-.h1{
+.h1 {
     background-color: #847ff1;
     padding: 20px;
     text-align: center;
     margin: 0;
 }
-
-.select-city {
-    font-size: 150%;
-    align-items: center;
-}
-
 
 h1 a,
 .h1 a {
@@ -107,7 +97,6 @@ h1 a,
 }
 
 .cart-art {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -118,7 +107,7 @@ h1 a,
     gap: 20px;
 }
 
-.data>a {
+.data > a {
     text-decoration: none;
     color: #333;
     background-color: white;
@@ -129,7 +118,7 @@ h1 a,
     display: block;
 }
 
-.data>a:hover {
+.data > a:hover {
     transform: translateY(-5px);
 }
 
@@ -148,7 +137,6 @@ h1 a,
     margin-top: 10px;
 }
 
-.CreationDate,
 .FirstAlbum,
 .Type {
     font-size: 14px;
@@ -219,7 +207,6 @@ h1 a,
 
 .dates-locations {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
 }
 
@@ -251,7 +238,6 @@ h1 a,
     background-color: #8875f6;
 }
 
-
 button {
     background-color: #6f7bf5;
     color: white;
@@ -279,4 +265,62 @@ h2 {
     margin-top: 20px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .filter-form {
+        width: 100%;
+        max-width: none;
+    }
+
+    .data {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-image {
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    .search-container {
+        max-width: 95%;
+    }
+
+    #search {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .name {
+        font-size: 16px;
+    }
+
+    .profile-name {
+        font-size: 24px;
+    }
+
+    .profile-section h2 {
+        font-size: 18px;
+    }
+
+    .filter-form input,
+    .filter-form button {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
 }

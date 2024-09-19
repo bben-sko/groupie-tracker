@@ -28,27 +28,20 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 
 	// Check if the 'id' contains more than one part
 	if len(str) > 1 {
-		ErrorPages(w, 404,"not found")
+		ErrorPages(w, 404, "not found")
 		return
 	}
 
 	// Validate the 'ID' to ensure it is within the valid range
 	if ID < 1 || ID > 52 {
-		tmp1, err := template.ParseFiles("template/error.html")
-		if err != nil {
+	
 			// If template parsing fails, handle the error
-			ErrorPages(w, 500, "internal server error")
+		//	ErrorPages(w, 500, "internal server error")
+			ErrorPages(w, 404, "not found")
 			return
 		}
 
-		// Execute the notfound template
-		err = tmp1.Execute(w, nil)
-		if err != nil {
-			ErrorPages(w, 404, "not found")
-		}
-		return
-
-	}
+	
 
 	// Base URL for the API requests
 	baseURL := "https://groupietrackers.herokuapp.com/api"

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -12,7 +11,7 @@ import (
 )
 
 type errorType struct {
-	ErrorCode string
+	ErrorCode int
 	Message   string
 }
 
@@ -22,61 +21,40 @@ var (
 )
 
 // handleError sends an error response to the client and logs the error
-func handleError(w http.ResponseWriter, status int, msg string, err error) {
-	http.Error(w, msg, status) // Send an error response
-	if err != nil {
-		fmt.Println(err) // Log the error
-	}
-}
+// func handleError(w http.ResponseWriter, status int, msg string, err error) {
+// 	ErrorPages(w, ErrorCode, Message) // Send an error response
+// 	if err != nil {
+// 		fmt.Println(err) // Log the error
+// 	}
+// }
 
-func ErrorPages(w http.ResponseWriter, code int) {
-	t, err := template.ParseFiles("templates/error.html")
+func ErrorPages(w http.ResponseWriter, code int, message string) {
+	w.WriteHeader(code)
+	t, err := template.ParseFiles("template/error.html")
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		t.Execute(w, errorType{ErrorCode: "500", Message: "Internal Server Error."})
+		t.Execute(w, errorType{
+			ErrorCode: 500,
+			Message:   "internal server error",
+		})
 		return
-	} else if code == 404 {
-		w.WriteHeader(http.StatusNotFound)
-		err = t.Execute(w, errorType{ErrorCode: "404", Message: "Sorry, the page you are looking for does not exist."})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			t.Execute(w, errorType{ErrorCode: "500", Message: "Internal Server Error."})
-		}
-	} else if code == 405 {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		err = t.Execute(w, errorType{ErrorCode: "405", Message: "Method not allowed."})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			t.Execute(w, errorType{ErrorCode: "500", Message: "Internal Server Error."})
-		}
-	} else if code == 400 {
-		w.WriteHeader(http.StatusBadRequest)
-		err = t.Execute(w, errorType{ErrorCode: "400", Message: "Bad Request."})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			t.Execute(w, errorType{ErrorCode: "500", Message: "Internal Server Error."})
-		}
-	} else {
-		w.WriteHeader(http.StatusInternalServerError)
-		t.Execute(w, errorType{ErrorCode: "500", Message: "Internal Server Error."})
 	}
+	t.Execute(w, errorType{ErrorCode: code, Message: message})
 }
 
 // SearchHandler handles search requests and returns search results in JSON format
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		ErrorPages(w, 500)
+		ErrorPages(w, 500, "internal server error")
 		return
 	}
 	domain := r.Header.Get("Sec-Fetch-Site")
 	if domain != "same-origin" {
-		handleError(w, http.StatusNotFound, "access denied", nil)
+		ErrorPages(w, http.StatusNotFound, "access denied")
 		return
 	}
-
 	// Check if there is a query string in the URL
 	if r.URL.RawQuery == "" {
-		ErrorPages(w, 404)
+		ErrorPages(w, 404, "not found")
 		return
 	}
 	var results []d.SearchResult
@@ -84,19 +62,17 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	if q == "" {
 		// If query is empty, return an empty result
 		if err := json.NewEncoder(w).Encode(results); err != nil {
-			ErrorPages(w, 500)
+			ErrorPages(w, 500, "internal server error")
 		}
 		return
 	}
 	query := strings.ToLower(q)
-
 	// Loop through all artists to find matching names and add them to results
 	for i, artist := range artists {
 		if len(results) > 16 {
 			// Stop if we have reached the limit of 16 results
 			break
 		}
-
 		if i == 0 {
 			// On the first iteration, check if artist names start with the query
 			for _, ar := range artists {
@@ -111,7 +87,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
 		artistName := strings.ToLower(artist.Name)
 		// Check if artist names contain the query
 		if !strings.HasPrefix(artistName, query) && strings.Contains(artistName, query) {
@@ -122,7 +97,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				Type:  "artist/band",
 			})
 		}
-
 		// Check if the query matches the artist's first album name
 		if strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) {
 			results = append(results, d.SearchResult{
@@ -131,7 +105,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				Type: "FirstAlbum of " + artist.Name,
 			})
 		}
-
 		C_Date := strconv.Itoa(artist.CreationDate)
 		// Check if the query matches the artist's creation date
 		if strings.HasPrefix(strings.ToLower(C_Date), query) {
@@ -142,14 +115,12 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 	}
-
 	// Loop through all artists again to find matching members and add them to results
 	for i, artist := range artists {
 		if len(results) > 16 {
 			// Stop if we have reached the limit of 16 results
 			break
 		}
-
 		if i == 0 {
 			// On the first iteration, check if any member names start with the query
 			for _, ar := range artists {
@@ -166,7 +137,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
 		// Check if any member names contain the query
 		for _, member := range artist.Members {
 			if !strings.HasPrefix(strings.ToLower(member), query) && strings.Contains(strings.ToLower(member), query) {
@@ -178,7 +148,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-
 	// Loop through all location indices to find matching locations and add them to results
 	j := 0
 	for _, loc := range artis.Index {
@@ -197,68 +166,46 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		j++
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(results); err != nil {
-		ErrorPages(w, 500)
+		ErrorPages(w, 500, "internal server error")
 	}
 }
 
 // Home handles requests to the home page
 func Home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		// handleError(w, http.StatusNotFound, "page not found 404", nil)
-		tmp1, err := template.ParseFiles("template/notfound.html")
-		if err != nil {
-			// If template parsing fails, handle the error
-			ErrorPages(w, 500)
-
-			return
-		}
-
-		// Execute the notfound template
-		err = tmp1.Execute(w, nil)
-		if err != nil {
-			ErrorPages(w, 500)
-		}
+		ErrorPages(w, 404, "page not found")
 		return
-
 	}
 	if r.Method != http.MethodGet {
-		ErrorPages(w, 405)
+		ErrorPages(w, 405, "merthod not alowd")
 		return
 	}
-
 	// Fetch artist data from the API
 	if err := fetchAndDecode("https://groupietrackers.herokuapp.com/api/artists", &artists); err != nil {
-		ErrorPages(w, 500)
-
+		ErrorPages(w, 500, "internal server error")
 		return
 	}
-
 	// Fetch location data from the API
 	if err := fetchAndDecode("https://groupietrackers.herokuapp.com/api/locations", &artis); err != nil {
-		ErrorPages(w, 500)
-
+		ErrorPages(w, 500, "internal server error")
 		return
 	}
-
 	// Parse the home page template
 	tmp, err := template.ParseFiles("template/home_page.html")
 	if err != nil {
-		ErrorPages(w, 500)
-
+		ErrorPages(w, 500, "internal server error")
 		return
 	}
 	h := removeDuplicates(artis)
-
 	viewData := d.ViewDat{
 		Da:  artists,
 		Loc: h,
 	}
 	// Execute the template with artist data
 	if err := tmp.Execute(w, viewData); err != nil {
-		ErrorPages(w, 500)
+		ErrorPages(w, 500, "internal server error")
 	}
 }
 
@@ -266,7 +213,6 @@ func removeDuplicates(s d.AutoGenerated) []string {
 	// Create a map to track unique strings
 	uniqueMap := make(map[string]bool)
 	var result []string
-
 	// Loop over the input slice
 	for _, locations := range s.Index {
 		for _, str := range locations.Locations {
@@ -283,8 +229,7 @@ func removeDuplicates(s d.AutoGenerated) []string {
 // Search handles search requests and displays results
 func Search(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		ErrorPages(w, 405)
-
+		ErrorPages(w, 405, "method not alowd")
 		return
 	}
 	var results []d.SearchResult
@@ -295,14 +240,12 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	query := strings.ToLower(q)
-
 	// Loop through all artists to find matching names and add them to results
 	for i, artist := range artists {
 		if len(results) > 16 {
 			// Stop if we have reached the limit of 16 results
 			break
 		}
-
 		if i == 0 {
 			// On the first iteration, check if artist names start with the query
 			for _, ar := range artists {
@@ -317,7 +260,6 @@ func Search(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
 		artistName := strings.ToLower(artist.Name)
 		// Check if artist names contain the query
 		if !strings.HasPrefix(artistName, query) && strings.Contains(artistName, query) {
@@ -328,7 +270,6 @@ func Search(w http.ResponseWriter, r *http.Request) {
 				Type:  "artist/band",
 			})
 		}
-
 		// Check if the query matches the artist's first album name
 		if strings.HasPrefix(strings.ToLower(artist.FirstAlbum), query) {
 			results = append(results, d.SearchResult{
@@ -338,7 +279,6 @@ func Search(w http.ResponseWriter, r *http.Request) {
 				Type:  "FirstAlbum of " + artist.Name,
 			})
 		}
-
 		C_Date := strconv.Itoa(artist.CreationDate)
 		// Check if the query matches the artist's creation date
 		if strings.HasPrefix(strings.ToLower(C_Date), query) {
@@ -350,7 +290,6 @@ func Search(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 	}
-
 	// Loop through all artists again to find matching members and add them to results
 	for i, artist := range artists {
 		if len(results) > 16 {
@@ -373,7 +312,6 @@ func Search(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
 		// Check if any member names contain the query
 		for _, member := range artist.Members {
 			if !strings.HasPrefix(strings.ToLower(member), query) && strings.Contains(strings.ToLower(member), query) {
@@ -386,7 +324,6 @@ func Search(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-
 	// Loop through all location indices to find matching locations and add them to results
 	j := 0
 	for _, loc := range artis.Index {
@@ -406,36 +343,30 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		}
 		j++
 	}
-
 	// Attempt to parse the search results template
 	tmp, err := template.ParseFiles("template/search.html")
 	if err != nil {
-		ErrorPages(w, 500)
-
+		ErrorPages(w, 500, "internal server error")
 		return
 	}
-
 	// Check if results are empty and handle accordingly
 	if results == nil {
 		// Attempt to parse the notfound template file
 		tmp1, err := template.ParseFiles("template/notfound.html")
 		if err != nil {
 			// If template parsing fails, handle the error
-			ErrorPages(w, 500)
-
+			ErrorPages(w, 500, "internal server error")
 			return
 		}
-
 		// Execute the notfound template
 		err = tmp1.Execute(w, nil)
 		if err != nil {
-			ErrorPages(w, 500)
+			ErrorPages(w, 500, "internal server error")
 		}
 		return
 	}
-
 	// Execute the search results template with the results
 	if err := tmp.Execute(w, results); err != nil {
-		ErrorPages(w, 500)
+		ErrorPages(w, 500, "internal server error")
 	}
 }

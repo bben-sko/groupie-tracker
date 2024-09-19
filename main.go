@@ -16,8 +16,9 @@ func main() {
 	http.HandleFunc("/filter", g.Filter)
 
 	fs := http.FileServer(http.Dir("./template"))
-    http.Handle("/template/", http.StripPrefix("/template/", fs))
+	http.Handle("/template/", http.StripPrefix("/template/", fs))
 	http.Handle("/style.css", http.FileServer(http.Dir("template")))
+	//http.Handle("/style1.css", http.FileServer(http.Dir("template")))
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		fmt.Println(err)

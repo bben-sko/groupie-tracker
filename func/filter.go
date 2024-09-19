@@ -11,11 +11,11 @@ import (
 
 func Filter(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		handleError(w, http.StatusMethodNotAllowed, "method not allowed", nil)
+		ErrorPages(w, 405, "method not allowed") //"method not allowed"
 		return
 	}
 	if r.URL.Path != "/filter" {
-		handleError(w, http.StatusNotFound, "page not found", nil)
+		ErrorPages(w, 405, "page not Found") //"page not found",
 		return
 	}
 	var results []d.Filter
@@ -31,7 +31,8 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	}
 	tmp, err := template.ParseFiles("template/Filter.html")
 	if err != nil {
-		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+		//"Internal Server Error 500
+		ErrorPages(w, 500, "Internal Server Error 500")
 		return
 	}
 
@@ -41,7 +42,8 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := tmp.Execute(w, results); err != nil {
-		handleError(w, http.StatusInternalServerError, "Internal Server Error 500", err)
+		ErrorPages(w, 500, "Internal Server Error 500")
+		return
 	}
 }
 
@@ -62,14 +64,14 @@ func Check_filter(r *http.Request, CreationDate int, Members []string, first_alb
 	locUK := r.FormValue("city")
 
 	// Filter by creation date
-	if r.FormValue("creation_date_min") != "" || r.FormValue("creation_date_max") != ""  {
+	if r.FormValue("creation_date_min") != "" || r.FormValue("creation_date_max") != "" {
 		if !(CreationDate >= creation_date_min && CreationDate <= creation_date_max) {
 			return false
 		}
 	}
 
 	// Filter by first album date
-	if r.FormValue("first_album_min") != "" || r.FormValue("first_album_max") != ""  {
+	if r.FormValue("first_album_min") != "" || r.FormValue("first_album_max") != "" {
 		first_album_date, err := strconv.Atoi(first_album[6:]) // Assuming date at the end of the string
 		if err != nil || !(first_album_date >= first_album_date_min && first_album_date <= first_album_date_max) {
 			return false
